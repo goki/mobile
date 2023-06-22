@@ -106,7 +106,7 @@ func TestNdkRoot(t *testing.T) {
 
 	t.Run("Modern 'side-by-side' NDK selection", func(t *testing.T) {
 		defer func() {
-			buildAndroidAPI = minAndroidAPI
+			buildAndroidMinSdk = minAndroidAPI
 		}()
 
 		ndkForest := filepath.Join(home, "ndk")
@@ -146,7 +146,7 @@ func TestNdkRoot(t *testing.T) {
 
 		for i, tc := range testCases {
 			t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
-				buildAndroidAPI = tc.api
+				buildAndroidMinSdk = tc.api
 				ndk, err := ndkRoot(tc.targets...)
 				if len(tc.wantNDKRoot) != 0 {
 					if ndk != tc.wantNDKRoot || err != nil {

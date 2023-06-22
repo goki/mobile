@@ -158,7 +158,7 @@ func envInit() (err error) {
 	// Setup the cross-compiler environments.
 	if ndkRoot, err := ndkRoot(); err == nil {
 		androidEnv = make(map[string][]string)
-		if buildAndroidAPI < minAndroidAPI {
+		if buildAndroidMinSdk < minAndroidAPI {
 			return fmt.Errorf("gomobile requires Android API level >= %d", minAndroidAPI)
 		}
 		for arch, toolchain := range ndk {
@@ -313,9 +313,9 @@ func checkNDKRoot(ndkRoot string, targets []targetInfo) error {
 	if err := decoder.Decode(&supportedVersions); err != nil {
 		return err
 	}
-	if supportedVersions.Min > buildAndroidAPI ||
-		supportedVersions.Max < buildAndroidAPI {
-		return fmt.Errorf("unsupported API version %d (not in %d..%d)", buildAndroidAPI, supportedVersions.Min, supportedVersions.Max)
+	if supportedVersions.Min > buildAndroidMinSdk ||
+		supportedVersions.Max < buildAndroidMinSdk {
+		return fmt.Errorf("unsupported API version %d (not in %d..%d)", buildAndroidMinSdk, supportedVersions.Min, supportedVersions.Max)
 	}
 	abisJson, err := os.Open(filepath.Join(ndkRoot, "meta", "abis.json"))
 	if err != nil {
@@ -547,10 +547,10 @@ type ndkToolchain struct {
 }
 
 func (tc *ndkToolchain) ClangPrefix() string {
-	if buildAndroidAPI < tc.minAPI {
+	if buildAndroidMinSdk < tc.minAPI {
 		return fmt.Sprintf("%s%d", tc.clangPrefix, tc.minAPI)
 	}
-	return fmt.Sprintf("%s%d", tc.clangPrefix, buildAndroidAPI)
+	return fmt.Sprintf("%s%d", tc.clangPrefix, buildAndroidMinSdk)
 }
 
 func (tc *ndkToolchain) Path(ndkRoot, toolName string) string {
