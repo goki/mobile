@@ -6,7 +6,7 @@
 package main
 
 import (
-	_ "golang.org/x/mobile/bind"
-	_ "golang.org/x/mobile/bind/java"
-	_ "golang.org/x/mobile/bind/objc"
+	_ "github.com/goki/mobile/bind"
+	_ "github.com/goki/mobile/bind/java"
+	_ "github.com/goki/mobile/bind/objc"
 )

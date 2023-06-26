@@ -33,15 +33,15 @@ import (
 	"encoding/binary"
 	"log"
 
-	"golang.org/x/mobile/app"
-	"golang.org/x/mobile/event/lifecycle"
-	"golang.org/x/mobile/event/paint"
-	"golang.org/x/mobile/event/size"
-	"golang.org/x/mobile/event/touch"
-	"golang.org/x/mobile/exp/app/debug"
-	"golang.org/x/mobile/exp/f32"
-	"golang.org/x/mobile/exp/gl/glutil"
-	"golang.org/x/mobile/gl"
+	"github.com/goki/mobile/app"
+	"github.com/goki/mobile/event/lifecycle"
+	"github.com/goki/mobile/event/paint"
+	"github.com/goki/mobile/event/size"
+	"github.com/goki/mobile/event/touch"
+	"github.com/goki/mobile/exp/app/debug"
+	"github.com/goki/mobile/exp/f32"
+	"github.com/goki/mobile/exp/gl/glutil"
+	"github.com/goki/mobile/gl"
 )
 
 var (

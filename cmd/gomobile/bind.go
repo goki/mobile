@@ -17,7 +17,7 @@ import (
 	"strings"
 	"sync"
 
-	"golang.org/x/mobile/internal/sdkpath"
+	"github.com/goki/mobile/internal/sdkpath"
 	"golang.org/x/mod/modfile"
 	"golang.org/x/tools/go/packages"
 )

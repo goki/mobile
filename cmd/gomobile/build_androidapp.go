@@ -20,7 +20,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"golang.org/x/mobile/internal/binres"
+	"github.com/goki/mobile/internal/binres"
 	"golang.org/x/tools/go/packages"
 )
 
@@ -171,7 +171,7 @@ func goAndroidBuild(pkg *packages.Package, targets []targetInfo) (map[string]boo
 
 	for _, t := range targets {
 		toolchain := ndk.Toolchain(t.arch)
-		if nmpkgs[t.arch]["golang.org/x/mobile/exp/audio/al"] {
+		if nmpkgs[t.arch]["github.com/goki/mobile/exp/audio/al"] {
 			dst := "lib/" + toolchain.abi + "/libopenal.so"
 			src := filepath.Join(gomobilepath, dst)
 			if _, err := os.Stat(src); err != nil {

@@ -15,7 +15,7 @@ import (
 	"testing"
 	"text/template"
 
-	"golang.org/x/mobile/internal/sdkpath"
+	"github.com/goki/mobile/internal/sdkpath"
 )
 
 func TestRFC1034Label(t *testing.T) {
@@ -89,7 +89,7 @@ func TestAndroidBuild(t *testing.T) {
 	if goos == "windows" {
 		os.Setenv("HOMEDRIVE", "C:")
 	}
-	cmdBuild.flag.Parse([]string{"golang.org/x/mobile/example/basic"})
+	cmdBuild.flag.Parse([]string{"github.com/goki/mobile/example/basic"})
 	oldTags := buildTags
 	buildTags = []string{"tag1"}
 	defer func() {
@@ -182,12 +182,12 @@ func TestRegexImportGolangXPackage(t *testing.T) {
 		want    string
 		wantLen int
 	}{
-		{"ffffffff t golang.org/x/mobile", "golang.org/x/mobile", 2},
-		{"ffffffff t github.com/example/repo/vendor/golang.org/x/mobile", "golang.org/x/mobile", 2},
+		{"ffffffff t golang.org/x/mobile", "github.com/goki/mobile", 2},
+		{"ffffffff t github.com/example/repo/vendor/golang.org/x/mobile", "github.com/goki/mobile", 2},
 		{"ffffffff t github.com/example/golang.org/x/mobile", "", 0},
 		{"ffffffff t github.com/example/repo", "", 0},
 		{"ffffffff t github.com/example/repo/vendor", "", 0},
-		{"ffffffff t _golang.org/x/mobile/app", "golang.org/x/mobile/app", 2},
+		{"ffffffff t _golang.org/x/mobile/app", "github.com/goki/mobile/app", 2},
 	}
 
 	for _, tc := range tests {
@@ -218,7 +218,7 @@ func TestBuildWithGoModules(t *testing.T) {
 	}
 	defer os.RemoveAll(dir)
 
-	if out, err := exec.Command("go", "build", "-o="+dir, "golang.org/x/mobile/cmd/gomobile").CombinedOutput(); err != nil {
+	if out, err := exec.Command("go", "build", "-o="+dir, "github.com/goki/mobile/cmd/gomobile").CombinedOutput(); err != nil {
 		t.Fatalf("%v: %s", err, string(out))
 	}
 	path := dir
@@ -254,7 +254,7 @@ func TestBuildWithGoModules(t *testing.T) {
 			}{
 				{
 					Name: "Absolute Path",
-					Path: "golang.org/x/mobile/example/basic",
+					Path: "github.com/goki/mobile/example/basic",
 				},
 				{
 					Name: "Relative Path",

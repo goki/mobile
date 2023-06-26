@@ -22,15 +22,15 @@
 //		modify the scene's nodes and animations (Arranger values)
 //		e.Render(scene, t, sz)
 //	}
-package sprite // import "golang.org/x/mobile/exp/sprite"
+package sprite // import "github.com/goki/mobile/exp/sprite"
 
 import (
 	"image"
 	"image/draw"
 
-	"golang.org/x/mobile/event/size"
-	"golang.org/x/mobile/exp/f32"
-	"golang.org/x/mobile/exp/sprite/clock"
+	"github.com/goki/mobile/event/size"
+	"github.com/goki/mobile/exp/f32"
+	"github.com/goki/mobile/exp/sprite/clock"
 )
 
 type Arranger interface {

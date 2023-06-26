@@ -6,5 +6,5 @@
 package bind
 
 import (
-	_ "golang.org/x/mobile/bind/seq"
+	_ "github.com/goki/mobile/bind/seq"
 )

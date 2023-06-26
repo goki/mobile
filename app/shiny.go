@@ -10,12 +10,12 @@ package app
 import (
 	"log"
 
+	"github.com/goki/mobile/event/lifecycle"
+	"github.com/goki/mobile/event/mouse"
+	"github.com/goki/mobile/event/touch"
+	"github.com/goki/mobile/gl"
 	"golang.org/x/exp/shiny/driver/gldriver"
 	"golang.org/x/exp/shiny/screen"
-	"golang.org/x/mobile/event/lifecycle"
-	"golang.org/x/mobile/event/mouse"
-	"golang.org/x/mobile/event/touch"
-	"golang.org/x/mobile/gl"
 )
 
 func main(f func(a App)) {

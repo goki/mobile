@@ -1,4 +1,4 @@
-module golang.org/x/mobile
+module github.com/goki/mobile
 
 go 1.17
 
@@ -10,4 +10,7 @@ require (
 	golang.org/x/tools v0.1.12
 )
 
-require golang.org/x/sys v0.0.0-20220722155257-8c9f86f7a55f // indirect
+require (
+	golang.org/x/mobile v0.0.0-20190312151609-d3739f865fa6 // indirect
+	golang.org/x/sys v0.0.0-20220722155257-8c9f86f7a55f // indirect
+)

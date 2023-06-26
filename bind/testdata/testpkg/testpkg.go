@@ -20,11 +20,11 @@ import (
 	"syscall"
 	"time"
 
-	"golang.org/x/mobile/asset"
+	"github.com/goki/mobile/asset"
 
-	"golang.org/x/mobile/bind/testdata/testpkg/secondpkg"
-	"golang.org/x/mobile/bind/testdata/testpkg/simplepkg"
-	"golang.org/x/mobile/bind/testdata/testpkg/unboundpkg"
+	"github.com/goki/mobile/bind/testdata/testpkg/secondpkg"
+	"github.com/goki/mobile/bind/testdata/testpkg/simplepkg"
+	"github.com/goki/mobile/bind/testdata/testpkg/unboundpkg"
 )
 
 const (
