@@ -159,7 +159,7 @@ func bootClasspath() (string, error) {
 	if bindBootClasspath != "" {
 		return bindBootClasspath, nil
 	}
-	apiPath, err := sdkpath.AndroidAPIPath(buildAndroidAPI)
+	apiPath, err := sdkpath.AndroidAPIPath(buildAndroidMinSdk)
 	if err != nil {
 		return "", err
 	}

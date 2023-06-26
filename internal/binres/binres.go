@@ -204,8 +204,8 @@ const (
 var skipSynthesize bool
 
 // UnmarshalXML decodes an AndroidManifest.xml document returning type XML
-// containing decoded resources.
-func UnmarshalXML(r io.Reader, withIcon bool) (*XML, error) {
+// containing decoded resources with the given minimum and target Android SDK / API version.
+func UnmarshalXML(r io.Reader, withIcon bool, minSdkVersion, targetSdkVersion int) (*XML, error) {
 	tbl, err := OpenTable()
 	if err != nil {
 		return nil, err
@@ -234,7 +234,6 @@ func UnmarshalXML(r io.Reader, withIcon bool) (*XML, error) {
 			return nil, err
 		}
 		tkn = xml.CopyToken(tkn)
-
 		switch tkn := tkn.(type) {
 		case xml.StartElement:
 			switch tkn.Name.Local {
@@ -244,21 +243,21 @@ func UnmarshalXML(r io.Reader, withIcon bool) (*XML, error) {
 				return nil, fmt.Errorf("manual declaration of uses-sdk in AndroidManifest.xml not supported")
 			case "manifest":
 				// synthesize additional attributes and nodes for use during encode.
-				tkn.Attr = append(tkn.Attr,
-					xml.Attr{
-						Name: xml.Name{
-							Space: "",
-							Local: "platformBuildVersionCode",
-						},
-						Value: "16",
+				tkn.Attr = append(tkn.Attr, xml.Attr{
+					Name: xml.Name{
+						Space: "",
+						Local: "platformBuildVersionCode",
 					},
+					Value: strconv.Itoa(targetSdkVersion),
+				},
 					xml.Attr{
 						Name: xml.Name{
 							Space: "",
 							Local: "platformBuildVersionName",
 						},
 						Value: "4.1.2-1425332",
-					})
+					},
+				)
 
 				q = append(q, ltoken{tkn, line})
 
@@ -269,12 +268,19 @@ func UnmarshalXML(r io.Reader, withIcon bool) (*XML, error) {
 							Local: "uses-sdk",
 						},
 						Attr: []xml.Attr{
-							xml.Attr{
+							{
 								Name: xml.Name{
 									Space: androidSchema,
 									Local: "minSdkVersion",
 								},
-								Value: fmt.Sprintf("%v", MinSDK),
+								Value: strconv.Itoa(minSdkVersion),
+							},
+							{
+								Name: xml.Name{
+									Space: androidSchema,
+									Local: "targetSdkVersion",
+								},
+								Value: strconv.Itoa(targetSdkVersion),
 							},
 						},
 					}
@@ -301,6 +307,20 @@ func UnmarshalXML(r io.Reader, withIcon bool) (*XML, error) {
 					}
 				}
 				q = append(q, ltoken{tkn, line})
+			case "activity", "service":
+				// need android:exported="true" for activities and services for android sdk version 31 and above
+				if !skipSynthesize && targetSdkVersion >= 31 {
+					tkn.Attr = append(tkn.Attr,
+						xml.Attr{
+							Name: xml.Name{
+								Space: androidSchema,
+								Local: "exported",
+							},
+							Value: "true",
+						},
+					)
+				}
+				q = append(q, ltoken{tkn, line})
 			}
 		default:
 			q = append(q, ltoken{tkn, line})
@@ -309,7 +329,6 @@ func UnmarshalXML(r io.Reader, withIcon bool) (*XML, error) {
 
 	for _, ltkn := range q {
 		tkn, line := ltkn.Token, ltkn.line
-
 		switch tkn := tkn.(type) {
 		case xml.StartElement:
 			el := &Element{
