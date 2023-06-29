@@ -19,7 +19,7 @@ import (
 )
 
 func TestBindAndroid(t *testing.T) {
-	platform, err := sdkpath.AndroidAPIPath(minAndroidAPI)
+	platform, err := sdkpath.AndroidAPIPath(minAndroidSDK)
 	if err != nil {
 		t.Skip("No compatible Android API platform found, skipping bind")
 	}
@@ -277,7 +277,7 @@ func TestBindWithGoModules(t *testing.T) {
 		t.Run(target, func(t *testing.T) {
 			switch target {
 			case "android":
-				if _, err := sdkpath.AndroidAPIPath(minAndroidAPI); err != nil {
+				if _, err := sdkpath.AndroidAPIPath(minAndroidSDK); err != nil {
 					t.Skip("No compatible Android API platform found, skipping bind")
 				}
 			case "ios":

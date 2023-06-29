@@ -143,7 +143,7 @@ func buildAAR(srcDir, androidDir string, pkgs []*packages.Package, targets []tar
 	}
 	const manifestFmt = `<manifest xmlns:android="http://schemas.android.com/apk/res/android" package=%q>
 <uses-sdk android:minSdkVersion="%d"/></manifest>`
-	fmt.Fprintf(w, manifestFmt, "go."+pkgs[0].Name+".gojni", buildAndroidMinSdk)
+	fmt.Fprintf(w, manifestFmt, "go."+pkgs[0].Name+".gojni", buildAndroidMinSDK)
 
 	w, err = aarwcreate("proguard.txt")
 	if err != nil {
@@ -245,8 +245,9 @@ func buildAAR(srcDir, androidDir string, pkgs []*packages.Package, targets []tar
 }
 
 const (
-	javacTargetVer = "1.8"
-	minAndroidAPI  = 16
+	javacTargetVer          = "1.8"
+	minAndroidSDK           = 23
+	defaultAndroidTargetSDK = 29
 )
 
 func buildJar(w io.Writer, srcDir string) error {

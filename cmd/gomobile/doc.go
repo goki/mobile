@@ -112,8 +112,11 @@ are copied into the output.
 Flag -iosversion sets the minimal version of the iOS SDK to compile against.
 The default version is 13.0.
 
-Flag -androidapi sets the Android API version to compile against.
-The default and minimum is 16.
+Flag -androidMinSDK sets the minimum supported Android SDK (uses-sdk/android:minSdkVersion in AndroidManifest.xml).
+The default and minimum is 23.
+
+Flag -androidTargetSDK sets the target Android SDK version (uses-sdk/android:targetSdkVersion in AndroidManifest.xml).
+The default is 29.
 
 The -bundleid flag is required for -target ios and sets the bundle ID to use
 with the app.

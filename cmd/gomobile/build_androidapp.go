@@ -233,7 +233,7 @@ func goAndroidBuild(pkg *packages.Package, targets []targetInfo) (map[string]boo
 		}
 	}
 
-	bxml, err := binres.UnmarshalXML(bytes.NewReader(manifestData), arsc.iconPath != "", buildAndroidMinSdk, buildAndroidTargetSdk)
+	bxml, err := binres.UnmarshalXML(bytes.NewReader(manifestData), arsc.iconPath != "", buildAndroidMinSDK, buildAndroidTargetSDK)
 	if err != nil {
 		return nil, err
 	}

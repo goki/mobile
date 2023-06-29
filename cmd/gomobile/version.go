@@ -58,7 +58,7 @@ func runVersion(cmd *command) (err error) {
 		platforms += "," + strings.Join(applePlatforms, ",")
 	}
 
-	androidapi, _ := sdkpath.AndroidAPIPath(buildAndroidMinSdk)
+	androidapi, _ := sdkpath.AndroidAPIPath(buildAndroidMinSDK)
 
 	fmt.Printf("gomobile version %s (%s); androidSDK=%s\n", version, platforms, androidapi)
 	return nil

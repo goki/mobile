@@ -60,8 +60,11 @@ are copied into the output.
 Flag -iosversion sets the minimal version of the iOS SDK to compile against.
 The default version is 13.0.
 
-Flag -androidapi sets the Android API version to compile against.
-The default and minimum is 16.
+Flag -androidMinSDK sets the minimum supported Android SDK (uses-sdk/android:minSdkVersion in AndroidManifest.xml).
+The default and minimum is 23.
+
+Flag -androidTargetSDK sets the target Android SDK version (uses-sdk/android:targetSdkVersion in AndroidManifest.xml).
+The default is 29.
 
 The -bundleid flag is required for -target ios and sets the bundle ID to use
 with the app.
@@ -246,8 +249,8 @@ var (
 	buildWork             bool        // -work
 	buildBundleID         string      // -bundleid
 	buildIOSVersion       string      // -iosversion
-	buildAndroidMinSdk    int         // -androidminsdk
-	buildAndroidTargetSdk int         // -androidtargetsdk
+	buildAndroidMinSDK    int         // -androidMinSDK
+	buildAndroidTargetSDK int         // -androidTargetSDK
 	buildTags             stringsFlag // -tags
 )
 
@@ -258,8 +261,8 @@ func addBuildFlags(cmd *command) {
 	cmd.flag.StringVar(&buildTarget, "target", "android", "")
 	cmd.flag.StringVar(&buildBundleID, "bundleid", "", "")
 	cmd.flag.StringVar(&buildIOSVersion, "iosversion", "13.0", "")
-	cmd.flag.IntVar(&buildAndroidMinSdk, "androidminsdk", minAndroidAPI, "")
-	cmd.flag.IntVar(&buildAndroidTargetSdk, "androidtargetsdk", minAndroidAPI, "")
+	cmd.flag.IntVar(&buildAndroidMinSDK, "androidMinSDK", minAndroidSDK, "")
+	cmd.flag.IntVar(&buildAndroidTargetSDK, "androidTargetSDK", defaultAndroidTargetSDK, "")
 
 	cmd.flag.BoolVar(&buildA, "a", false, "")
 	cmd.flag.BoolVar(&buildI, "i", false, "")

@@ -230,7 +230,7 @@ func TestBuildWithGoModules(t *testing.T) {
 		t.Run(target, func(t *testing.T) {
 			switch target {
 			case "android":
-				if _, err := sdkpath.AndroidAPIPath(minAndroidAPI); err != nil {
+				if _, err := sdkpath.AndroidAPIPath(minAndroidSDK); err != nil {
 					t.Skip("No compatible android API platform found, skipping bind")
 				}
 			case "ios":
