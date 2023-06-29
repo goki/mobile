@@ -9,8 +9,6 @@ package app
 
 import (
 	"github.com/goki/mobile/event/lifecycle"
-	"github.com/goki/mobile/event/size"
-	"github.com/goki/mobile/gl"
 	_ "github.com/goki/mobile/internal/mobileinit"
 )
 
@@ -52,6 +50,9 @@ type App interface {
 	// but the function can also return its argument unchanged, where its purpose
 	// is to trigger a side effect rather than modify the event.
 	RegisterFilter(f func(interface{}) interface{})
+
+	// Window returns a uintptr to the window the app is contained in.
+	Window() uintptr
 }
 
 // PublishResult is the result of an App.Publish call.
@@ -66,11 +67,12 @@ var theApp = &app{
 	lifecycleStage: lifecycle.StageDead,
 	publish:        make(chan struct{}),
 	publishResult:  make(chan PublishResult),
+	window:         0,
 }
 
 func init() {
 	theApp.eventsIn = pump(theApp.eventsOut)
-	theApp.glctx, theApp.worker = gl.NewContext()
+	// theApp.glctx, theApp.worker = gl.NewContext()
 }
 
 func (a *app) sendLifecycle(to lifecycle.Stage) {
@@ -78,9 +80,9 @@ func (a *app) sendLifecycle(to lifecycle.Stage) {
 		return
 	}
 	a.eventsIn <- lifecycle.Event{
-		From:        a.lifecycleStage,
-		To:          to,
-		DrawContext: a.glctx,
+		From: a.lifecycleStage,
+		To:   to,
+		// DrawContext: a.glctx,
 	}
 	a.lifecycleStage = to
 }
@@ -93,9 +95,10 @@ type app struct {
 	lifecycleStage lifecycle.Stage
 	publish        chan struct{}
 	publishResult  chan PublishResult
+	window         uintptr
 
-	glctx  gl.Context
-	worker gl.Worker
+	// glctx  gl.Context
+	// worker gl.Worker
 }
 
 func (a *app) Events() <-chan interface{} {
@@ -114,7 +117,7 @@ func (a *app) Publish() PublishResult {
 	//
 	// This enforces that the final receive (for this paint cycle) on
 	// gl.WorkAvailable happens before the send on endPaint.
-	a.glctx.Flush()
+	// a.glctx.Flush()
 	a.publish <- struct{}{}
 	return <-a.publishResult
 }
@@ -128,6 +131,10 @@ func (a *app) Filter(event interface{}) interface{} {
 
 func (a *app) RegisterFilter(f func(interface{}) interface{}) {
 	a.filters = append(a.filters, f)
+}
+
+func (a *app) Window() uintptr {
+	return a.window
 }
 
 type stopPumping struct{}
@@ -199,16 +206,16 @@ func pump(dst chan interface{}) (src chan interface{}) {
 	return src
 }
 
-// TODO: do this for all build targets, not just linux (x11 and Android)? If
-// so, should package gl instead of this package call RegisterFilter??
-//
-// TODO: does Android need this?? It seems to work without it (Nexus 7,
-// KitKat). If only x11 needs this, should we move this to x11.go??
-func (a *app) registerGLViewportFilter() {
-	a.RegisterFilter(func(e interface{}) interface{} {
-		if e, ok := e.(size.Event); ok {
-			a.glctx.Viewport(0, 0, e.WidthPx, e.HeightPx)
-		}
-		return e
-	})
-}
+// // TODO: do this for all build targets, not just linux (x11 and Android)? If
+// // so, should package gl instead of this package call RegisterFilter??
+// //
+// // TODO: does Android need this?? It seems to work without it (Nexus 7,
+// // KitKat). If only x11 needs this, should we move this to x11.go??
+// func (a *app) registerGLViewportFilter() {
+// 	a.RegisterFilter(func(e interface{}) interface{} {
+// 		if e, ok := e.(size.Event); ok {
+// 			a.glctx.Viewport(0, 0, e.WidthPx, e.HeightPx)
+// 		}
+// 		return e
+// 	})
+// }

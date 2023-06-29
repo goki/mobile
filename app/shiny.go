@@ -13,7 +13,6 @@ import (
 	"github.com/goki/mobile/event/lifecycle"
 	"github.com/goki/mobile/event/mouse"
 	"github.com/goki/mobile/event/touch"
-	"github.com/goki/mobile/gl"
 	"golang.org/x/exp/shiny/driver/gldriver"
 	"golang.org/x/exp/shiny/screen"
 )
@@ -26,8 +25,8 @@ func main(f func(a App)) {
 		}
 		defer w.Release()
 
-		theApp.glctx = nil
-		theApp.worker = nil // handled by shiny
+		// theApp.glctx = nil
+		// theApp.worker = nil // handled by shiny
 
 		go func() {
 			for range theApp.publish {
@@ -62,9 +61,9 @@ func main(f func(a App)) {
 func convertEvent(e interface{}) interface{} {
 	switch e := e.(type) {
 	case lifecycle.Event:
-		if theApp.glctx == nil {
-			theApp.glctx = e.DrawContext.(gl.Context)
-		}
+		// if theApp.glctx == nil {
+		// 	theApp.glctx = e.DrawContext.(gl.Context)
+		// }
 	case mouse.Event:
 		te := touch.Event{
 			X: e.X,
