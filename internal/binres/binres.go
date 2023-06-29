@@ -307,8 +307,8 @@ func UnmarshalXML(r io.Reader, withIcon bool, minSdkVersion, targetSdkVersion in
 					}
 				}
 				q = append(q, ltoken{tkn, line})
-			case "activity", "service":
-				// need android:exported="true" for activities and services for android sdk version 31 and above
+			case "activity", "intent-filter", "action", "category", "service", "meta-data":
+				// need android:exported="true" for activities in android sdk version 31 and above (still not working so testing with other things also set to exported)
 				if !skipSynthesize && targetSdkVersion >= 31 {
 					tkn.Attr = append(tkn.Attr,
 						xml.Attr{
