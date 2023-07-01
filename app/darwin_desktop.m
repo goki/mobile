@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-//go:build darwin && !ios
 // +build darwin
 // +build !ios
 
@@ -140,14 +139,11 @@ uint64 threadID() {
 - (void)windowWillClose:(NSNotification *)notification {
 	lifecycleAlive();
 }
-@end
 
-@interface MobileResponder : NSResponder
-{
+- (BOOL)acceptsFirstResponder {
+    return true;
 }
-@end
 
-@implementation MobileResponder
 - (void)keyDown:(NSEvent *)theEvent {
 	[self key:theEvent];
 }
@@ -240,8 +236,6 @@ runApp(void) {
 	[window setContentView:view];
 	[window setDelegate:view];
 	[NSApp setDelegate:view];
-
-	window.nextResponder = [[[MobileResponder alloc] init] autorelease];
 
 	[NSApp run];
 }

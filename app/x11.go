@@ -29,7 +29,6 @@ import (
 	"github.com/goki/mobile/event/paint"
 	"github.com/goki/mobile/event/size"
 	"github.com/goki/mobile/event/touch"
-	"github.com/goki/mobile/geom"
 )
 
 func init() {
@@ -40,6 +39,7 @@ func main(f func(App)) {
 	runtime.LockOSThread()
 
 	workAvailable := theApp.worker.WorkAvailable()
+	heartbeat := time.NewTicker(time.Second / 60)
 
 	C.createWindow()
 
@@ -48,16 +48,12 @@ func main(f func(App)) {
 
 	// TODO: translate X11 expose events to shiny paint events, instead of
 	// sending this synthetic paint event as a hack.
-	theApp.eventsIn <- paint.Event{}
+	theApp.events.In() <- paint.Event{}
 
 	donec := make(chan struct{})
 	go func() {
-		// close the donec channel in a defer statement
-		// so that we could still be able to return even
-		// if f panics.
-		defer close(donec)
-
 		f(theApp)
+		close(donec)
 	}()
 
 	// TODO: can we get the actual vsync signal?
@@ -69,6 +65,8 @@ func main(f func(App)) {
 		select {
 		case <-donec:
 			return
+		case <-heartbeat.C:
+			C.processEvents()
 		case <-workAvailable:
 			theApp.worker.DoWork()
 		case <-theApp.publish:
@@ -78,7 +76,6 @@ func main(f func(App)) {
 			tc = nil
 			theApp.publishResult <- PublishResult{}
 		}
-		C.processEvents()
 	}
 }
 
@@ -87,17 +84,18 @@ func onResize(w, h int) {
 	// TODO(nigeltao): don't assume 72 DPI. DisplayWidth and DisplayWidthMM
 	// is probably the best place to start looking.
 	pixelsPerPt := float32(1)
-	theApp.eventsIn <- size.Event{
+	theApp.events.In() <- size.Event{
 		WidthPx:     w,
 		HeightPx:    h,
-		WidthPt:     geom.Pt(w),
-		HeightPt:    geom.Pt(h),
+		WidthPt:     float32(w),
+		HeightPt:    float32(h),
 		PixelsPerPt: pixelsPerPt,
+		Orientation: screenOrientation(w, h),
 	}
 }
 
 func sendTouch(t touch.Type, x, y float32) {
-	theApp.eventsIn <- touch.Event{
+	theApp.events.In() <- touch.Event{
 		X:        x,
 		Y:        y,
 		Sequence: 0, // TODO: button??
@@ -123,5 +121,21 @@ func onStop() {
 	}
 	stopped = true
 	theApp.sendLifecycle(lifecycle.StageDead)
-	theApp.eventsIn <- stopPumping{}
+	theApp.events.Close()
+}
+
+// driverShowVirtualKeyboard does nothing on desktop
+func driverShowVirtualKeyboard(KeyboardType) {
+}
+
+// driverHideVirtualKeyboard does nothing on desktop
+func driverHideVirtualKeyboard() {
+}
+
+// driverShowFileOpenPicker does nothing on desktop
+func driverShowFileOpenPicker(func(string, func()), *FileFilter) {
+}
+
+// driverShowFileSavePicker does nothing on desktop
+func driverShowFileSavePicker(func(string, func()), *FileFilter, string) {
 }

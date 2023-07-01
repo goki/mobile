@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-//go:build android
+// go:build android
 // +build android
 
 #include <android/log.h>
@@ -10,6 +10,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <stdint.h>
+#include <stdbool.h>
 #include <string.h>
 #include "_cgo_export.h"
 
@@ -18,9 +19,11 @@
 
 static jclass current_class;
 
-static jclass find_class(JNIEnv *env, const char *class_name) {
+static jclass find_class(JNIEnv *env, const char *class_name)
+{
 	jclass clazz = (*env)->FindClass(env, class_name);
-	if (clazz == NULL) {
+	if (clazz == NULL)
+	{
 		(*env)->ExceptionClear(env);
 		LOG_FATAL("cannot find %s", class_name);
 		return NULL;
@@ -28,9 +31,11 @@ static jclass find_class(JNIEnv *env, const char *class_name) {
 	return clazz;
 }
 
-static jmethodID find_method(JNIEnv *env, jclass clazz, const char *name, const char *sig) {
+static jmethodID find_method(JNIEnv *env, jclass clazz, const char *name, const char *sig)
+{
 	jmethodID m = (*env)->GetMethodID(env, clazz, name, sig);
-	if (m == 0) {
+	if (m == 0)
+	{
 		(*env)->ExceptionClear(env);
 		LOG_FATAL("cannot find method %s %s", name, sig);
 		return 0;
@@ -38,9 +43,11 @@ static jmethodID find_method(JNIEnv *env, jclass clazz, const char *name, const 
 	return m;
 }
 
-static jmethodID find_static_method(JNIEnv *env, jclass clazz, const char *name, const char *sig) {
+static jmethodID find_static_method(JNIEnv *env, jclass clazz, const char *name, const char *sig)
+{
 	jmethodID m = (*env)->GetStaticMethodID(env, clazz, name, sig);
-	if (m == 0) {
+	if (m == 0)
+	{
 		(*env)->ExceptionClear(env);
 		LOG_FATAL("cannot find method %s %s", name, sig);
 		return 0;
@@ -49,10 +56,16 @@ static jmethodID find_static_method(JNIEnv *env, jclass clazz, const char *name,
 }
 
 static jmethodID key_rune_method;
+static jmethodID show_keyboard_method;
+static jmethodID hide_keyboard_method;
+static jmethodID show_file_open_method;
+static jmethodID show_file_save_method;
 
-jint JNI_OnLoad(JavaVM* vm, void* reserved) {
-	JNIEnv* env;
-	if ((*vm)->GetEnv(vm, (void**)&env, JNI_VERSION_1_6) != JNI_OK) {
+jint JNI_OnLoad(JavaVM *vm, void *reserved)
+{
+	JNIEnv *env;
+	if ((*vm)->GetEnv(vm, (void **)&env, JNI_VERSION_1_6) != JNI_OK)
+	{
 		return -1;
 	}
 
@@ -69,29 +82,43 @@ static int main_running = 0;
 //
 // The Activity may be created and destroyed multiple times throughout
 // the life of a single process. Each time, onCreate is called.
-void ANativeActivity_onCreate(ANativeActivity *activity, void* savedState, size_t savedStateSize) {
-	if (!main_running) {
-		JNIEnv* env = activity->env;
+void ANativeActivity_onCreate(ANativeActivity *activity, void *savedState, size_t savedStateSize)
+{
+	if (!main_running)
+	{
+		JNIEnv *env = activity->env;
 
 		// Note that activity->clazz is mis-named.
 		current_class = (*env)->GetObjectClass(env, activity->clazz);
 		current_class = (*env)->NewGlobalRef(env, current_class);
 		key_rune_method = find_static_method(env, current_class, "getRune", "(III)I");
+		show_keyboard_method = find_static_method(env, current_class, "showKeyboard", "(I)V");
+		hide_keyboard_method = find_static_method(env, current_class, "hideKeyboard", "()V");
+		show_file_open_method = find_static_method(env, current_class, "showFileOpen", "(Ljava/lang/String;)V");
+		show_file_save_method = find_static_method(env, current_class, "showFileSave", "(Ljava/lang/String;Ljava/lang/String;)V");
 
 		setCurrentContext(activity->vm, (*env)->NewGlobalRef(env, activity->clazz));
+
+		// Set FILESDIR
+		if (setenv("FILESDIR", activity->internalDataPath, 1) != 0)
+		{
+			LOG_INFO("setenv(\"FILESDIR\", \"%s\", 1) failed: %d", activity->internalDataPath, errno);
+		}
 
 		// Set TMPDIR.
 		jmethodID gettmpdir = find_method(env, current_class, "getTmpdir", "()Ljava/lang/String;");
 		jstring jpath = (jstring)(*env)->CallObjectMethod(env, activity->clazz, gettmpdir, NULL);
-		const char* tmpdir = (*env)->GetStringUTFChars(env, jpath, NULL);
-		if (setenv("TMPDIR", tmpdir, 1) != 0) {
+		const char *tmpdir = (*env)->GetStringUTFChars(env, jpath, NULL);
+		if (setenv("TMPDIR", tmpdir, 1) != 0)
+		{
 			LOG_INFO("setenv(\"TMPDIR\", \"%s\", 1) failed: %d", tmpdir, errno);
 		}
 		(*env)->ReleaseStringUTFChars(env, jpath, tmpdir);
 
 		// Call the Go main.main.
 		uintptr_t mainPC = (uintptr_t)dlsym(RTLD_DEFAULT, "main.main");
-		if (!mainPC) {
+		if (!mainPC)
+		{
 			LOG_FATAL("missing main.main");
 		}
 		callMain(mainPC);
@@ -130,72 +157,152 @@ static const EGLint RGB_888[] = {
 	EGL_RED_SIZE, 8,
 	EGL_DEPTH_SIZE, 16,
 	EGL_CONFIG_CAVEAT, EGL_NONE,
-	EGL_NONE
-};
+	EGL_NONE};
 
 EGLDisplay display = NULL;
 EGLSurface surface = NULL;
+EGLContext context = NULL;
 
-static char* initEGLDisplay() {
+static char *initEGLDisplay()
+{
 	display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-	if (!eglInitialize(display, 0, 0)) {
+	if (!eglInitialize(display, 0, 0))
+	{
 		return "EGL initialize failed";
 	}
 	return NULL;
 }
 
-char* createEGLSurface(ANativeWindow* window) {
-	char* err;
+char *createEGLSurface(ANativeWindow *window)
+{
+	char *err;
 	EGLint numConfigs, format;
 	EGLConfig config;
-	EGLContext context;
 
-	if (display == 0) {
-		if ((err = initEGLDisplay()) != NULL) {
+	if (display == 0)
+	{
+		if ((err = initEGLDisplay()) != NULL)
+		{
 			return err;
 		}
 	}
 
-	if (!eglChooseConfig(display, RGB_888, &config, 1, &numConfigs)) {
+	if (!eglChooseConfig(display, RGB_888, &config, 1, &numConfigs))
+	{
 		return "EGL choose RGB_888 config failed";
 	}
-	if (numConfigs <= 0) {
+	if (numConfigs <= 0)
+	{
 		return "EGL no config found";
 	}
 
 	eglGetConfigAttrib(display, config, EGL_NATIVE_VISUAL_ID, &format);
-	if (ANativeWindow_setBuffersGeometry(window, 0, 0, format) != 0) {
+	if (ANativeWindow_setBuffersGeometry(window, 0, 0, format) != 0)
+	{
 		return "EGL set buffers geometry failed";
 	}
 
 	surface = eglCreateWindowSurface(display, config, window, NULL);
-	if (surface == EGL_NO_SURFACE) {
+	if (surface == EGL_NO_SURFACE)
+	{
 		return "EGL create surface failed";
 	}
 
-	const EGLint contextAttribs[] = { EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE };
-	context = eglCreateContext(display, config, EGL_NO_CONTEXT, contextAttribs);
+	if (context == NULL)
+	{
+		const EGLint contextAttribs[] = {EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE};
+		context = eglCreateContext(display, config, EGL_NO_CONTEXT, contextAttribs);
+	}
 
-	if (eglMakeCurrent(display, surface, surface, context) == EGL_FALSE) {
+	if (eglMakeCurrent(display, surface, surface, context) == EGL_FALSE)
+	{
 		return "eglMakeCurrent failed";
 	}
 	return NULL;
 }
 
-char* destroyEGLSurface() {
-	if (!eglDestroySurface(display, surface)) {
+char *destroyEGLSurface()
+{
+	if (!eglDestroySurface(display, surface))
+	{
 		return "EGL destroy surface failed";
 	}
 	return NULL;
 }
 
-int32_t getKeyRune(JNIEnv* env, AInputEvent* e) {
+int32_t getKeyRune(JNIEnv *env, AInputEvent *e)
+{
 	return (int32_t)(*env)->CallStaticIntMethod(
 		env,
 		current_class,
 		key_rune_method,
 		AInputEvent_getDeviceId(e),
 		AKeyEvent_getKeyCode(e),
-		AKeyEvent_getMetaState(e)
-	);
+		AKeyEvent_getMetaState(e));
+}
+
+void showKeyboard(JNIEnv *env, int keyboardType)
+{
+	(*env)->CallStaticVoidMethod(
+		env,
+		current_class,
+		show_keyboard_method,
+		keyboardType);
+}
+
+void hideKeyboard(JNIEnv *env)
+{
+	(*env)->CallStaticVoidMethod(
+		env,
+		current_class,
+		hide_keyboard_method);
+}
+
+void showFileOpen(JNIEnv *env, char *mimes)
+{
+	jstring mimesJString = (*env)->NewStringUTF(env, mimes);
+	(*env)->CallStaticVoidMethod(
+		env,
+		current_class,
+		show_file_open_method,
+		mimesJString);
+}
+
+void showFileSave(JNIEnv *env, char *mimes, char *filename)
+{
+	jstring mimesJString = (*env)->NewStringUTF(env, mimes);
+	jstring filenameJString = (*env)->NewStringUTF(env, filename);
+	(*env)->CallStaticVoidMethod(
+		env,
+		current_class,
+		show_file_save_method,
+		mimesJString,
+		filenameJString);
+}
+
+void Java_org_golang_app_GoNativeActivity_filePickerReturned(JNIEnv *env, jclass clazz, jstring str)
+{
+	const char *cstr = (*env)->GetStringUTFChars(env, str, JNI_FALSE);
+	filePickerReturned((char *)cstr);
+}
+
+void Java_org_golang_app_GoNativeActivity_insetsChanged(JNIEnv *env, jclass clazz, int top, int bottom, int left, int right)
+{
+	insetsChanged(top, bottom, left, right);
+}
+
+void Java_org_golang_app_GoNativeActivity_keyboardTyped(JNIEnv *env, jclass clazz, jstring str)
+{
+	const char *cstr = (*env)->GetStringUTFChars(env, str, JNI_FALSE);
+	keyboardTyped((char *)cstr);
+}
+
+void Java_org_golang_app_GoNativeActivity_keyboardDelete(JNIEnv *env, jclass clazz)
+{
+	keyboardDelete();
+}
+
+void Java_org_golang_app_GoNativeActivity_setDarkMode(JNIEnv *env, jclass clazz, jboolean dark)
+{
+	setDarkMode((bool)dark);
 }

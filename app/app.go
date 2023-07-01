@@ -9,6 +9,7 @@ package app
 
 import (
 	"github.com/goki/mobile/event/lifecycle"
+	"github.com/goki/mobile/event/size"
 	_ "github.com/goki/mobile/internal/mobileinit"
 )
 
@@ -53,6 +54,24 @@ type App interface {
 
 	// Window returns a uintptr to the window the app is contained in.
 	Window() uintptr
+
+	// ShowVirtualKeyboard shows the virtual keyboard of the given type on the mobile device
+	ShowVirtualKeyboard(KeyboardType)
+
+	// HideVirtualKeyboard hides the virtual keyboard on the mobile device
+	HideVirtualKeyboard()
+
+	// ShowFileOpenPicker shows the file open picker on the mobile device
+	ShowFileOpenPicker(func(string, func()), *FileFilter)
+
+	// ShowFileSavePicker shows the file save picker on the mobile device
+	ShowFileSavePicker(func(string, func()), *FileFilter, string)
+}
+
+// FileFilter is a filter of files.
+type FileFilter struct {
+	Extensions []string
+	MimeTypes  []string
 }
 
 // PublishResult is the result of an App.Publish call.
@@ -67,7 +86,6 @@ var theApp = &app{
 	lifecycleStage: lifecycle.StageDead,
 	publish:        make(chan struct{}),
 	publishResult:  make(chan PublishResult),
-	window:         0,
 }
 
 func init() {
@@ -135,6 +153,21 @@ func (a *app) RegisterFilter(f func(interface{}) interface{}) {
 
 func (a *app) Window() uintptr {
 	return a.window
+}
+
+func (a *app) ShowVirtualKeyboard(keyboard KeyboardType) {
+	driverShowVirtualKeyboard(keyboard)
+}
+
+func (a *app) HideVirtualKeyboard() {
+	driverHideVirtualKeyboard()
+}
+
+func (a *app) ShowFileOpenPicker(callback func(string, func()), filter *FileFilter) {
+	driverShowFileOpenPicker(callback, filter)
+}
+func (a *app) ShowFileSavePicker(callback func(string, func()), filter *FileFilter, filename string) {
+	driverShowFileSavePicker(callback, filter, filename)
 }
 
 type stopPumping struct{}
@@ -219,3 +252,11 @@ func pump(dst chan interface{}) (src chan interface{}) {
 // 		return e
 // 	})
 // }
+
+func screenOrientation(width, height int) size.Orientation {
+	if width > height {
+		return size.OrientationLandscape
+	}
+
+	return size.OrientationPortrait
+}

@@ -8,10 +8,11 @@
 package app
 
 /*
-#cgo CFLAGS: -x objective-c -DGL_SILENCE_DEPRECATION -DGLES_SILENCE_DEPRECATION
-#cgo LDFLAGS: -framework Foundation -framework UIKit -framework GLKit -framework OpenGLES -framework QuartzCore
+#cgo CFLAGS: -x objective-c -DGL_SILENCE_DEPRECATION
+#cgo LDFLAGS: -framework Foundation -framework UIKit -framework MobileCoreServices -framework GLKit -framework OpenGLES -framework QuartzCore -framework UserNotifications
 #include <sys/utsname.h>
 #include <stdint.h>
+#include <stdbool.h>
 #include <pthread.h>
 #include <UIKit/UIDevice.h>
 #import <GLKit/GLKit.h>
@@ -22,19 +23,28 @@ void runApp(void);
 void makeCurrentContext(GLintptr ctx);
 void swapBuffers(GLintptr ctx);
 uint64_t threadID();
+
+UIEdgeInsets getDevicePadding();
+bool isDark();
+void showKeyboard(int keyboardType);
+void hideKeyboard();
+
+void showFileOpenPicker(char* mimes, char *exts);
+void showFileSavePicker(char* mimes, char *exts);
+void closeFileResource(void* urlPtr);
 */
 import "C"
 import (
 	"log"
 	"runtime"
 	"strings"
-	"sync"
+	"time"
+	"unsafe"
 
 	"github.com/goki/mobile/event/lifecycle"
 	"github.com/goki/mobile/event/paint"
 	"github.com/goki/mobile/event/size"
 	"github.com/goki/mobile/event/touch"
-	"github.com/goki/mobile/geom"
 )
 
 var initThreadID uint64
@@ -52,9 +62,9 @@ func init() {
 }
 
 func main(f func(App)) {
-	if tid := uint64(C.threadID()); tid != initThreadID {
-		log.Fatalf("app.Run called on thread %d, but app.init ran on %d", tid, initThreadID)
-	}
+	//if tid := uint64(C.threadID()); tid != initThreadID {
+	//	log.Fatalf("app.Run called on thread %d, but app.init ran on %d", tid, initThreadID)
+	//}
 
 	go func() {
 		f(theApp)
@@ -66,6 +76,17 @@ func main(f func(App)) {
 
 var pixelsPerPt float32
 var screenScale int // [UIScreen mainScreen].scale, either 1, 2, or 3.
+
+var DisplayMetrics struct {
+	WidthPx  int
+	HeightPx int
+}
+
+//export setDisplayMetrics
+func setDisplayMetrics(width, height int, scale int) {
+	DisplayMetrics.WidthPx = width
+	DisplayMetrics.HeightPx = height
+}
 
 //export setScreen
 func setScreen(scale int) {
@@ -106,18 +127,24 @@ func updateConfig(width, height, orientation int32) {
 		o = size.OrientationPortrait
 	case C.UIDeviceOrientationLandscapeLeft, C.UIDeviceOrientationLandscapeRight:
 		o = size.OrientationLandscape
+		width, height = height, width
 	}
-	widthPx := screenScale * int(width)
-	heightPx := screenScale * int(height)
-	theApp.eventsIn <- size.Event{
-		WidthPx:     widthPx,
-		HeightPx:    heightPx,
-		WidthPt:     geom.Pt(float32(widthPx) / pixelsPerPt),
-		HeightPt:    geom.Pt(float32(heightPx) / pixelsPerPt),
-		PixelsPerPt: pixelsPerPt,
-		Orientation: o,
+	insets := C.getDevicePadding()
+
+	theApp.events.In() <- size.Event{
+		WidthPx:       int(width),
+		HeightPx:      int(height),
+		WidthPt:       float32(width) / pixelsPerPt,
+		HeightPt:      float32(height) / pixelsPerPt,
+		InsetTopPx:    int(float32(insets.top) * float32(screenScale)),
+		InsetBottomPx: int(float32(insets.bottom) * float32(screenScale)),
+		InsetLeftPx:   int(float32(insets.left) * float32(screenScale)),
+		InsetRightPx:  int(float32(insets.right) * float32(screenScale)),
+		PixelsPerPt:   pixelsPerPt,
+		Orientation:   o,
+		DarkMode:      bool(C.isDark()),
 	}
-	theApp.eventsIn <- paint.Event{External: true}
+	theApp.events.In() <- paint.Event{External: true}
 }
 
 // touchIDs is the current active touches. The position in the array
@@ -126,11 +153,6 @@ func updateConfig(width, height, orientation int32) {
 // It is widely reported that the iPhone can handle up to 5 simultaneous
 // touch events, while the iPad can handle 11.
 var touchIDs [11]uintptr
-
-var touchEvents struct {
-	sync.Mutex
-	pending []touch.Event
-}
 
 //export sendTouch
 func sendTouch(cTouch, cTouchType uintptr, x, y float32) {
@@ -156,10 +178,16 @@ func sendTouch(cTouch, cTouchType uintptr, x, y float32) {
 
 	t := touch.Type(cTouchType)
 	if t == touch.TypeEnd {
-		touchIDs[id] = 0
+		// Clear all touchIDs when touch ends. The UITouch pointers are unique
+		// at every multi-touch event. See:
+		// https://github.com/fyne-io/fyne/issues/2407
+		// https://developer.apple.com/documentation/uikit/touches_presses_and_gestures?language=objc
+		for idx := range touchIDs {
+			touchIDs[idx] = 0
+		}
 	}
 
-	theApp.eventsIn <- touch.Event{
+	theApp.events.In() <- touch.Event{
 		X:        x,
 		Y:        y,
 		Sequence: touch.Sequence(id),
@@ -178,6 +206,24 @@ func lifecycleVisible() { theApp.sendLifecycle(lifecycle.StageVisible) }
 
 //export lifecycleFocused
 func lifecycleFocused() { theApp.sendLifecycle(lifecycle.StageFocused) }
+
+//export drawloop
+func drawloop() {
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+
+	for workAvailable := theApp.worker.WorkAvailable(); ; {
+		select {
+		case <-workAvailable:
+			theApp.worker.DoWork()
+		case <-theApp.publish:
+			theApp.publishResult <- PublishResult{}
+			return
+		case <-time.After(100 * time.Millisecond): // incase the method blocked!!
+			return
+		}
+	}
+}
 
 //export startloop
 func startloop(ctx C.GLintptr) {
@@ -213,4 +259,61 @@ func (a *app) loop(ctx C.GLintptr) {
 			theApp.publishResult <- PublishResult{}
 		}
 	}
+}
+
+func cStringsForFilter(filter *FileFilter) (*C.char, *C.char) {
+	mimes := strings.Join(filter.MimeTypes, "|")
+
+	// extensions must have the '.' removed for UTI lookups on iOS
+	extList := []string{}
+	for _, ext := range filter.Extensions {
+		extList = append(extList, ext[1:])
+	}
+	exts := strings.Join(extList, "|")
+
+	return C.CString(mimes), C.CString(exts)
+}
+
+// driverShowVirtualKeyboard requests the driver to show a virtual keyboard for text input
+func driverShowVirtualKeyboard(keyboard KeyboardType) {
+	C.showKeyboard(C.int(int32(keyboard)))
+}
+
+// driverHideVirtualKeyboard requests the driver to hide any visible virtual keyboard
+func driverHideVirtualKeyboard() {
+	C.hideKeyboard()
+}
+
+var fileCallback func(string, func())
+
+//export filePickerReturned
+func filePickerReturned(str *C.char, urlPtr unsafe.Pointer) {
+	if fileCallback == nil {
+		return
+	}
+
+	fileCallback(C.GoString(str), func() {
+		C.closeFileResource(urlPtr)
+	})
+	fileCallback = nil
+}
+
+func driverShowFileOpenPicker(callback func(string, func()), filter *FileFilter) {
+	fileCallback = callback
+
+	mimeStr, extStr := cStringsForFilter(filter)
+	defer C.free(unsafe.Pointer(mimeStr))
+	defer C.free(unsafe.Pointer(extStr))
+
+	C.showFileOpenPicker(mimeStr, extStr)
+}
+
+func driverShowFileSavePicker(callback func(string, func()), filter *FileFilter, filename string) {
+	fileCallback = callback
+
+	mimeStr, extStr := cStringsForFilter(filter)
+	defer C.free(unsafe.Pointer(mimeStr))
+	defer C.free(unsafe.Pointer(extStr))
+
+	C.showFileSavePicker(mimeStr, extStr)
 }
