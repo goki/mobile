@@ -171,9 +171,15 @@ func runBuildImpl(cmd *command) (*packages.Package, error) {
 		}
 	}
 
-	if !nmpkgs["github.com/goki/mobile/app"] {
-		return nil, fmt.Errorf(`%s does not import "github.com/goki/mobile/app"`, pkg.PkgPath)
-	}
+	// This is not correctly detecting use of mobile/app.
+	// Furthermore, even if it did, people should be able to use the gomobile build tool
+	// to build things for mobile without using the actual mobile/app package.
+	// Therefore, it has been commented out, at least temporarily.
+	// TODO: decide to what to do here in the long-term.
+	_ = nmpkgs
+	// if !nmpkgs["github.com/goki/mobile/app"] {
+	// 	return nil, fmt.Errorf(`%s does not import "github.com/goki/mobile/app"`, pkg.PkgPath)
+	// }
 
 	return pkg, nil
 }
