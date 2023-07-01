@@ -22,6 +22,15 @@ to install the gomobile command, build the
 [basic](https://golang.org/x/mobile/example/basic)
 and the [bind](https://golang.org/x/mobile/example/bind) example apps.
 
+
+# Developer info
+
+
+## Android
+
+After any updates to GoNativeActivity.java, you need to run `go generate` in `cmd/gomobile` which uses `gendex.go` to generate `dex.go`, which has the bindings to access the java functions.
+
+
 --
 
 Contributions to Go are appreciated. See https://golang.org/doc/contribute.html.

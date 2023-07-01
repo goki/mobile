@@ -30,7 +30,8 @@ Commands:
 
 Use 'gomobile help [command]' for more information about that command.
 
-# Build a library for Android and iOS
+
+Build a library for Android and iOS
 
 Usage:
 
@@ -52,9 +53,10 @@ example, in Android Studio (1.2+), an AAR file can be imported using
 the module import wizard (File > New > New Module > Import .JAR or
 .AAR package), and setting it as a new dependency
 (File > Project Structure > Dependencies).  This requires 'javac'
-(version 1.7+) and Android SDK (API level 16 or newer) to build the
-library for Android. The environment variable ANDROID_HOME must be set
-to the path to Android SDK. Use the -javapkg flag to specify the Java
+(version 1.8+) and Android SDK (API level 16 or newer) to build the
+library for Android. The ANDROID_HOME and ANDROID_NDK_HOME environment
+variables can be used to specify the Android SDK and NDK if they are
+not in the default locations. Use the -javapkg flag to specify the Java
 package prefix for the generated classes.
 
 By default, -target=android builds shared libraries for all supported
@@ -75,7 +77,8 @@ The -v flag provides verbose output, including the list of packages built.
 The build flags -a, -n, -x, -gcflags, -ldflags, -tags, -trimpath, and -work
 are shared with the build command. For documentation, see 'go help build'.
 
-# Compile android APK and iOS app
+
+Compile android APK and iOS app
 
 Usage:
 
@@ -129,15 +132,17 @@ The -v flag provides verbose output, including the list of packages built.
 The build flags -a, -i, -n, -x, -gcflags, -ldflags, -tags, -trimpath, and -work are
 shared with the build command. For documentation, see 'go help build'.
 
-# Remove object files and cached gomobile files
+
+Remove object files and cached gomobile files
 
 Usage:
 
 	gomobile clean
 
-Clean removes object files and cached NDK files downloaded by gomobile init.
+Clean removes object files and cached NDK files downloaded by gomobile init
 
-# Build OpenAL for Android
+
+Build OpenAL for Android
 
 Usage:
 
@@ -147,7 +152,8 @@ If a OpenAL source directory is specified with -openal, init will
 build an Android version of OpenAL for use with gomobile build
 and gomobile install.
 
-# Compile android APK and install on device
+
+Compile android APK and install on device
 
 Usage:
 
@@ -162,7 +168,8 @@ The build flags -a, -i, -n, -x, -gcflags, -ldflags, -tags, -trimpath, and -work 
 shared with the build command.
 For documentation, see 'go help build'.
 
-# Print version
+
+Print version
 
 Usage:
 
