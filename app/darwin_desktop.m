@@ -235,6 +235,7 @@ runApp(void) {
 	MobileGLView* view = [[MobileGLView alloc] initWithFrame:rect pixelFormat:pixFormat];
 	[window setContentView:view];
 	[window setDelegate:view];
+	setWindow(window);
 	[NSApp setDelegate:view];
 
 	[NSApp run];

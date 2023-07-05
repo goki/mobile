@@ -63,6 +63,11 @@ func main(f func(App)) {
 	C.runApp()
 }
 
+//export setWindow
+func setWindow(window *C.UIWindow) {
+	theApp.window = uintptr(unsafe.Pointer(window))
+}
+
 // loop is the primary drawing loop.
 //
 // After Cocoa has captured the initial OS thread for processing Cocoa
@@ -76,25 +81,25 @@ func main(f func(App)) {
 // blocks until the screen refresh.
 func (a *app) loop(ctx C.GLintptr) {
 	runtime.LockOSThread()
-	C.makeCurrentContext(ctx)
+	// C.makeCurrentContext(ctx)
 
-	workAvailable := a.worker.WorkAvailable()
+	// workAvailable := a.worker.WorkAvailable()
 
 	for {
 		select {
-		case <-workAvailable:
-			a.worker.DoWork()
+		// case <-workAvailable:
+		// 	a.worker.DoWork()
 		case <-theApp.publish:
-		loop1:
-			for {
-				select {
-				case <-workAvailable:
-					a.worker.DoWork()
-				default:
-					break loop1
-				}
-			}
-			C.CGLFlushDrawable(C.CGLGetCurrentContext())
+			// loop1:
+			// 	for {
+			// 		select {
+			// 		case <-workAvailable:
+			// 			a.worker.DoWork()
+			// 		default:
+			// 			break loop1
+			// 		}
+			// 	}
+			// C.CGLFlushDrawable(C.CGLGetCurrentContext())
 			theApp.publishResult <- PublishResult{}
 			select {
 			case drawDone <- struct{}{}:

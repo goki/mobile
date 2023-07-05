@@ -82,6 +82,11 @@ var DisplayMetrics struct {
 	HeightPx int
 }
 
+//export setWindow
+func setWindow(window *C.UIWindow) {
+	theApp.window = uintptr(unsafe.Pointer(window))
+}
+
 //export setDisplayMetrics
 func setDisplayMetrics(width, height int, scale int) {
 	DisplayMetrics.WidthPx = width
@@ -212,10 +217,11 @@ func drawloop() {
 	runtime.LockOSThread()
 	defer runtime.UnlockOSThread()
 
-	for workAvailable := theApp.worker.WorkAvailable(); ; {
+	// for workAvailable := theApp.worker.WorkAvailable(); ; {
+	for {
 		select {
-		case <-workAvailable:
-			theApp.worker.DoWork()
+		// case <-workAvailable:
+		// theApp.worker.DoWork()
 		case <-theApp.publish:
 			theApp.publishResult <- PublishResult{}
 			return
@@ -237,25 +243,25 @@ func startloop(ctx C.GLintptr) {
 // to an OS thread for its OpenGL context.
 func (a *app) loop(ctx C.GLintptr) {
 	runtime.LockOSThread()
-	C.makeCurrentContext(ctx)
+	// C.makeCurrentContext(ctx)
 
-	workAvailable := a.worker.WorkAvailable()
+	// workAvailable := a.worker.WorkAvailable()
 
 	for {
 		select {
-		case <-workAvailable:
-			a.worker.DoWork()
+		// case <-workAvailable:
+		// 	a.worker.DoWork()
 		case <-theApp.publish:
-		loop1:
-			for {
-				select {
-				case <-workAvailable:
-					a.worker.DoWork()
-				default:
-					break loop1
-				}
-			}
-			C.swapBuffers(ctx)
+			// loop1:
+			// for {
+			// 	select {
+			// 	case <-workAvailable:
+			// 		a.worker.DoWork()
+			// 	default:
+			// 		break loop1
+			// 	}
+			// }
+			// C.swapBuffers(ctx)
 			theApp.publishResult <- PublishResult{}
 		}
 	}
