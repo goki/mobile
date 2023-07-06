@@ -14,6 +14,7 @@ package app
 #include <stdint.h>
 #include <stdbool.h>
 #include <pthread.h>
+#import <UIKit/UIKit.h>
 #include <UIKit/UIDevice.h>
 #import <GLKit/GLKit.h>
 
@@ -45,6 +46,7 @@ import (
 	"github.com/goki/mobile/event/paint"
 	"github.com/goki/mobile/event/size"
 	"github.com/goki/mobile/event/touch"
+	"github.com/goki/mobile/geom"
 )
 
 var initThreadID uint64
@@ -82,10 +84,10 @@ var DisplayMetrics struct {
 	HeightPx int
 }
 
-//export setWindow
-func setWindow(window *C.UIWindow) {
-	theApp.window = uintptr(unsafe.Pointer(window))
-}
+// //export setWindow
+// func setWindow(window *C.UIWindow) {
+// 	theApp.window = uintptr(unsafe.Pointer(window))
+// }
 
 //export setDisplayMetrics
 func setDisplayMetrics(width, height int, scale int) {
@@ -136,11 +138,11 @@ func updateConfig(width, height, orientation int32) {
 	}
 	insets := C.getDevicePadding()
 
-	theApp.events.In() <- size.Event{
+	theApp.eventsIn <- size.Event{
 		WidthPx:       int(width),
 		HeightPx:      int(height),
-		WidthPt:       float32(width) / pixelsPerPt,
-		HeightPt:      float32(height) / pixelsPerPt,
+		WidthPt:       geom.Pt(float32(width) / pixelsPerPt),
+		HeightPt:      geom.Pt(float32(height) / pixelsPerPt),
 		InsetTopPx:    int(float32(insets.top) * float32(screenScale)),
 		InsetBottomPx: int(float32(insets.bottom) * float32(screenScale)),
 		InsetLeftPx:   int(float32(insets.left) * float32(screenScale)),
@@ -149,7 +151,7 @@ func updateConfig(width, height, orientation int32) {
 		Orientation:   o,
 		DarkMode:      bool(C.isDark()),
 	}
-	theApp.events.In() <- paint.Event{External: true}
+	theApp.eventsIn <- paint.Event{External: true}
 }
 
 // touchIDs is the current active touches. The position in the array
@@ -192,7 +194,7 @@ func sendTouch(cTouch, cTouchType uintptr, x, y float32) {
 		}
 	}
 
-	theApp.events.In() <- touch.Event{
+	theApp.eventsIn <- touch.Event{
 		X:        x,
 		Y:        y,
 		Sequence: touch.Sequence(id),

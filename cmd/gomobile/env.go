@@ -209,13 +209,13 @@ func envInit() (err error) {
 				sdk = "iphoneos"
 				clang, cflags, err = envClang(sdk)
 				cflags += " -miphoneos-version-min=" + buildIOSVersion
-				cflags += " -fembed-bitcode"
+				// cflags += " -fembed-bitcode"
 			case "iossimulator":
 				goos = "ios"
 				sdk = "iphonesimulator"
 				clang, cflags, err = envClang(sdk)
 				cflags += " -mios-simulator-version-min=" + buildIOSVersion
-				cflags += " -fembed-bitcode"
+				// cflags += " -fembed-bitcode"
 			case "maccatalyst":
 				// Mac Catalyst is a subset of iOS APIs made available on macOS
 				// designed to ease porting apps developed for iPad to macOS.
@@ -244,14 +244,14 @@ func envInit() (err error) {
 					cflags += " -target x86_64-apple-ios" + buildIOSVersion + "-macabi"
 				case "arm64":
 					cflags += " -target arm64-apple-ios" + buildIOSVersion + "-macabi"
-					cflags += " -fembed-bitcode"
+					// cflags += " -fembed-bitcode"
 				}
 			case "macos":
 				goos = "darwin"
 				sdk = "macosx" // Note: the SDK is called "macosx", not "macos"
 				clang, cflags, err = envClang(sdk)
 				if arch == "arm64" {
-					cflags += " -fembed-bitcode"
+					// cflags += " -fembed-bitcode"
 				}
 			default:
 				panic(fmt.Errorf("unknown Apple target: %s/%s", platform, arch))

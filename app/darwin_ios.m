@@ -39,10 +39,10 @@ struct utsname sysInfo;
 
 	lifecycleAlive();
 	self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    setWindow(self.window);
 	self.controller = [[GoAppAppController alloc] initWithNibName:nil bundle:nil];
 	self.window.rootViewController = self.controller;
 	[self.window makeKeyAndVisible];
+    // setWindow(self.window);
 
     // update insets once key window is set
 	UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];

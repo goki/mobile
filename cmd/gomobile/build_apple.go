@@ -450,7 +450,7 @@ var projPbxprojTmpl = template.Must(template.New("projPbxproj").Parse(`// !$*UTF
         SDKROOT = iphoneos;
         TARGETED_DEVICE_FAMILY = "1,2";
         VALIDATE_PRODUCT = YES;
-        ENABLE_BITCODE = YES;
+        ENABLE_BITCODE = NO;
       };
       name = Release;
     };
