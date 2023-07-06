@@ -15,6 +15,7 @@ package app
 #include <stdbool.h>
 #include <pthread.h>
 #import <UIKit/UIKit.h>
+#import <MobileCoreServices/MobileCoreServices.h>
 #include <UIKit/UIDevice.h>
 #import <GLKit/GLKit.h>
 
@@ -84,10 +85,10 @@ var DisplayMetrics struct {
 	HeightPx int
 }
 
-// //export setWindow
-// func setWindow(window *C.UIWindow) {
-// 	theApp.window = uintptr(unsafe.Pointer(window))
-// }
+//export setWindowPtr
+func setWindowPtr(window *C.void) {
+	theApp.window = uintptr(unsafe.Pointer(window))
+}
 
 //export setDisplayMetrics
 func setDisplayMetrics(width, height int, scale int) {
