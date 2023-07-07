@@ -12,12 +12,15 @@
 
 #import <UIKit/UIKit.h>
 #import <MobileCoreServices/MobileCoreServices.h>
-#import <GLKit/GLKit.h>
+// #import <GLKit/GLKit.h>
 #import <UserNotifications/UserNotifications.h>
 
 struct utsname sysInfo;
 
 @interface GoAppAppController : GLKViewController<UIContentContainer, GLKViewDelegate>
+@end
+
+@interface GoAppView : UIView
 @end
 
 @interface GoInputView : UITextField<UITextFieldDelegate>
@@ -42,7 +45,6 @@ struct utsname sysInfo;
 	self.controller = [[GoAppAppController alloc] initWithNibName:nil bundle:nil];
 	self.window.rootViewController = self.controller;
 	[self.window makeKeyAndVisible];
-    setWindowPtr((void *)self.window);
 
     // update insets once key window is set
 	UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
@@ -97,38 +99,39 @@ struct utsname sysInfo;
 @end
 
 @interface GoAppAppController ()
-@property (strong, nonatomic) EAGLContext *context;
-@property (strong, nonatomic) GLKView *glview;
+// @property (strong, nonatomic) EAGLContext *context;
+// @property (strong, nonatomic) GLKView *glview;
 @property (strong, nonatomic) GoInputView *inputView;
 @end
 
 @implementation GoAppAppController
-- (void)viewWillAppear:(BOOL)animated
-{
-	// TODO: replace by swapping out GLKViewController for a UIVIewController.
-	[super viewWillAppear:animated];
-	self.paused = YES;
+// - (void)viewWillAppear:(BOOL)animated
+// {
+//	// TODO: replace by swapping out GLKViewController for a UIVIewController.
+//	[super viewWillAppear:animated];
+//	self.paused = YES;
+//}
+
+-(void) loadView {
+	self.view = [[GoAppView alloc] initWithFrame:CGRectMake(0, 0, 400, 400)];
 }
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
-	self.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+	
 	self.inputView = [[GoInputView alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
 	self.inputView.delegate = self.inputView;
 	self.inputView.autocapitalizationType = UITextAutocapitalizationTypeNone;
 	self.inputView.autocorrectionType = UITextAutocorrectionTypeNo;
 	[self.view addSubview:self.inputView];
-	self.glview = (GLKView*)self.view;
-	self.glview.drawableDepthFormat = GLKViewDrawableDepthFormat24;
-	self.glview.multipleTouchEnabled = true; // TODO expose setting to user.
-	self.glview.context = self.context;
-	self.glview.userInteractionEnabled = YES;
-	//self.glview.enableSetNeedsDisplay = YES; // only invoked once
 
-	// Do not use the GLKViewController draw loop.
-	//self.paused = YES;
-	//self.resumeOnDidBecomeActive = NO;
-	//self.preferredFramesPerSecond = 0;
+	self.view.contentScaleFactor = UIScreen.mainScreen.nativeScale;
+	self.view.multipleTouchEnabled = true;
+	self.view.userInteractionEnabled = YES;
+	
+	self.paused = YES;
+	self.resumeOnDidBecomeActive = NO;
+	self.preferredFramesPerSecond = 0;
 
 	int scale = 1;
 	if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)]) {
@@ -140,7 +143,8 @@ struct utsname sysInfo;
 	UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
 	updateConfig((int)size.width, (int)size.height, orientation);
 
-    self.glview.enableSetNeedsDisplay = NO;
+    setWindowPtr((void *)self.view);
+	
     CADisplayLink* displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(render:)];
     [displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 }
@@ -155,12 +159,8 @@ struct utsname sysInfo;
 	}];
 }
 
-- (void)render:(CADisplayLink*)displayLink {
-    [self.glview display];
-}
-
-- (void)glkView:(GLKView *)view drawInRect:(CGRect)rect {
-    drawloop();
+-(void) render:(CADisplayLink*)displayLink {
+   // [self.view display]; // todo: seems unnecessary?
 }
 
 #define TOUCH_TYPE_BEGIN 0 // touch.TypeBegin
@@ -200,6 +200,16 @@ static void sendTouches(int change, NSSet* touches) {
 }
 @end
 
+#pragma mark -
+#pragma mark GoAppView
+
+@implementation GoAppView
+
+/** Returns a Metal-compatible layer. */
++(Class) layerClass { return [CAMetalLayer class]; }
+
+@end
+
 @implementation GoInputView
 
 - (BOOL)canBecomeFirstResponder {
@@ -224,6 +234,7 @@ void runApp(void) {
 	}
 }
 
+/*
 void makeCurrentContext(GLintptr context) {
 	EAGLContext* ctx = (EAGLContext*)context;
 	if (![EAGLContext setCurrentContext:ctx]) {
@@ -239,6 +250,7 @@ void swapBuffers(GLintptr context) {
 		[ctx presentRenderbuffer:GL_RENDERBUFFER];
 	});
 }
+*/
 
 uint64_t threadID() {
 	uint64_t id;

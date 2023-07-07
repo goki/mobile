@@ -208,7 +208,9 @@ func envInit() (err error) {
 				goos = "ios"
 				sdk = "iphoneos"
 				clang, cflags, err = envClang(sdk)
-				cflags += " -miphoneos-version-min=" + buildIOSVersion
+				// cflags += " -miphoneos-version-min=" + buildIOSVersion
+				cflags += " -mios-version-min=" + buildIOSVersion
+				fmt.Printf("added ios cflags: %s\n", cflags)
 				// cflags += " =false"
 			case "iossimulator":
 				goos = "ios"

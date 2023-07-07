@@ -451,6 +451,7 @@ var projPbxprojTmpl = template.Must(template.New("projPbxproj").Parse(`// !$*UTF
         TARGETED_DEVICE_FAMILY = "1,2";
         VALIDATE_PRODUCT = YES;
         ENABLE_BITCODE = NO;
+        IPHONEOS_DEPLOYMENT_TARGET = 15.0;
       };
       name = Release;
     };

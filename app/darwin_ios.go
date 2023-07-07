@@ -69,6 +69,7 @@ func main(f func(App)) {
 	//	log.Fatalf("app.Run called on thread %d, but app.init ran on %d", tid, initThreadID)
 	//}
 
+	log.Println("in mobile main")
 	go func() {
 		f(theApp)
 		// TODO(crawshaw): trigger runApp to return
@@ -88,6 +89,7 @@ var DisplayMetrics struct {
 //export setWindowPtr
 func setWindowPtr(window *C.void) {
 	theApp.window = uintptr(unsafe.Pointer(window))
+	log.Println("set window pointer to:", theApp.window)
 }
 
 //export setDisplayMetrics
