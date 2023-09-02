@@ -177,4 +177,4 @@ Usage:
 
 Version prints versions of the gomobile binary and tools
 */
-package main // import "github.com/goki/mobile/cmd/gomobile"
+package main // import "goki.dev/mobile/cmd/gomobile"

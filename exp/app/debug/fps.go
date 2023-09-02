@@ -6,7 +6,7 @@
 // +build darwin linux windows
 
 // Package debug provides GL-based debugging tools for apps.
-package debug // import "github.com/goki/mobile/exp/app/debug"
+package debug // import "goki.dev/mobile/exp/app/debug"
 
 import (
 	"image"
@@ -14,9 +14,9 @@ import (
 	"image/draw"
 	"time"
 
-	"github.com/goki/mobile/event/size"
-	"github.com/goki/mobile/exp/gl/glutil"
-	"github.com/goki/mobile/geom"
+	"goki.dev/mobile/event/size"
+	"goki.dev/mobile/exp/gl/glutil"
+	"goki.dev/mobile/geom"
 )
 
 // FPS draws a count of the frames rendered per second.

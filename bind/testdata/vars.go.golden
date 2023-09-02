@@ -15,7 +15,7 @@ package main
 import "C"
 
 import (
-	_seq "github.com/goki/mobile/bind/seq"
+	_seq "goki.dev/mobile/bind/seq"
 	"vars"
 )
 

@@ -11,7 +11,7 @@ import (
 	"math"
 	"strings"
 
-	"github.com/goki/mobile/internal/importers/objc"
+	"goki.dev/mobile/internal/importers/objc"
 )
 
 // TODO(hyangah): handle method name conflicts.

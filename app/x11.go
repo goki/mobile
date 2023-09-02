@@ -25,10 +25,10 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/goki/mobile/event/lifecycle"
-	"github.com/goki/mobile/event/paint"
-	"github.com/goki/mobile/event/size"
-	"github.com/goki/mobile/event/touch"
+	"goki.dev/mobile/event/lifecycle"
+	"goki.dev/mobile/event/paint"
+	"goki.dev/mobile/event/size"
+	"goki.dev/mobile/event/touch"
 )
 
 func init() {

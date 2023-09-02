@@ -9,7 +9,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/goki/mobile/internal/sdkpath"
+	"goki.dev/mobile/internal/sdkpath"
 )
 
 // MinSDK is the targeted sdk version for support by package binres.

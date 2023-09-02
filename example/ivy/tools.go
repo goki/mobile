@@ -10,6 +10,6 @@ package dummy
 // This is a dummy go file to add required module dependencies to go.mod.
 
 import (
-	_ "github.com/goki/mobile/bind"
+	_ "goki.dev/mobile/bind"
 	_ "robpike.io/ivy"
 )

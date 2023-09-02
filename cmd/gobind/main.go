@@ -17,9 +17,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/goki/mobile/internal/importers"
-	"github.com/goki/mobile/internal/importers/java"
-	"github.com/goki/mobile/internal/importers/objc"
+	"goki.dev/mobile/internal/importers"
+	"goki.dev/mobile/internal/importers/java"
+	"goki.dev/mobile/internal/importers/objc"
 	"golang.org/x/tools/go/packages"
 )
 

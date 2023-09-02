@@ -1,7 +1,7 @@
 package app
 
 import "C"
-import "github.com/goki/mobile/event/key"
+import "goki.dev/mobile/event/key"
 
 // KeyboardType represents the type of a keyboard
 type KeyboardType int32

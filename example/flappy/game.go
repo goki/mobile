@@ -15,10 +15,10 @@ import (
 
 	_ "image/png"
 
-	"github.com/goki/mobile/asset"
-	"github.com/goki/mobile/exp/f32"
-	"github.com/goki/mobile/exp/sprite"
-	"github.com/goki/mobile/exp/sprite/clock"
+	"goki.dev/mobile/asset"
+	"goki.dev/mobile/exp/f32"
+	"goki.dev/mobile/exp/sprite"
+	"goki.dev/mobile/exp/sprite/clock"
 )
 
 const (

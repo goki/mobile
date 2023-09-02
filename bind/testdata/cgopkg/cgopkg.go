@@ -3,7 +3,7 @@ package cgopkg
 import "C"
 
 import (
-	_ "github.com/goki/mobile/gl"
+	_ "goki.dev/mobile/gl"
 )
 
 func Dummy() {}

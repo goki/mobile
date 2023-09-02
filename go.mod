@@ -1,4 +1,4 @@
-module github.com/goki/mobile
+module goki.dev/mobile
 
 go 1.17
 

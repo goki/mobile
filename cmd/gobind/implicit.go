@@ -6,7 +6,7 @@
 package main
 
 import (
-	_ "github.com/goki/mobile/bind"
-	_ "github.com/goki/mobile/bind/java"
-	_ "github.com/goki/mobile/bind/objc"
+	_ "goki.dev/mobile/bind"
+	_ "goki.dev/mobile/bind/java"
+	_ "goki.dev/mobile/bind/objc"
 )

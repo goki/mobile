@@ -6,12 +6,12 @@
 // orientation of the app's window.
 //
 // See the golang.org/x/mobile/app package for details on the event model.
-package size // import "github.com/goki/mobile/event/size"
+package size // import "goki.dev/mobile/event/size"
 
 import (
 	"image"
 
-	"github.com/goki/mobile/geom"
+	"goki.dev/mobile/geom"
 )
 
 // Event holds the dimensions, physical resolution and orientation of the app's

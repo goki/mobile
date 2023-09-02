@@ -13,7 +13,7 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/goki/mobile/internal/sdkpath"
+	"goki.dev/mobile/internal/sdkpath"
 )
 
 // General mobile build environment. Initialized by envInit.

@@ -17,7 +17,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/goki/mobile/internal/sdkpath"
+	"goki.dev/mobile/internal/sdkpath"
 	"golang.org/x/tools/go/packages"
 )
 
@@ -177,8 +177,8 @@ func runBuildImpl(cmd *command) (*packages.Package, error) {
 	// Therefore, it has been commented out, at least temporarily.
 	// TODO: decide to what to do here in the long-term.
 	_ = nmpkgs
-	// if !nmpkgs["github.com/goki/mobile/app"] {
-	// 	return nil, fmt.Errorf(`%s does not import "github.com/goki/mobile/app"`, pkg.PkgPath)
+	// if !nmpkgs["goki.dev/mobile/app"] {
+	// 	return nil, fmt.Errorf(`%s does not import "goki.dev/mobile/app"`, pkg.PkgPath)
 	// }
 
 	return pkg, nil
@@ -188,7 +188,7 @@ var nmRE = regexp.MustCompile(`[0-9a-f]{8} t _?(?:.*/vendor/)?(golang.org/x.*/[^
 
 func extractPkgs(nm string, path string) (map[string]bool, error) {
 	if buildN {
-		return map[string]bool{"github.com/goki/mobile/app": true}, nil
+		return map[string]bool{"goki.dev/mobile/app": true}, nil
 	}
 	r, w := io.Pipe()
 	cmd := exec.Command(nm, path)

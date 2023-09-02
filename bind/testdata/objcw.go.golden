@@ -71,7 +71,7 @@ package main
 import "C"
 
 import "ObjC"
-import _seq "github.com/goki/mobile/bind/seq"
+import _seq "goki.dev/mobile/bind/seq"
 import "ObjC/Foundation/NSMutableString"
 import "ObjC/NetworkExtension/NEPacket"
 
@@ -403,7 +403,7 @@ import "C"
 import (
 	"ObjC/Foundation"
 	"ObjC/UIKit"
-	_seq "github.com/goki/mobile/bind/seq"
+	_seq "goki.dev/mobile/bind/seq"
 	"objcw"
 )
 

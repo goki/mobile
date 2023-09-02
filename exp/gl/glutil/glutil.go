@@ -5,13 +5,13 @@
 //go:build darwin || linux || windows
 // +build darwin linux windows
 
-package glutil // import "github.com/goki/mobile/exp/gl/glutil"
+package glutil // import "goki.dev/mobile/exp/gl/glutil"
 
 import (
 	"fmt"
 
-	"github.com/goki/mobile/exp/f32"
-	"github.com/goki/mobile/gl"
+	"goki.dev/mobile/exp/f32"
+	"goki.dev/mobile/gl"
 )
 
 // CreateProgram creates, compiles, and links a gl.Program.

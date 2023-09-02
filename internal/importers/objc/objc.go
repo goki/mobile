@@ -19,7 +19,7 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"github.com/goki/mobile/internal/importers"
+	"goki.dev/mobile/internal/importers"
 )
 
 type parser struct {

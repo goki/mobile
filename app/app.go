@@ -8,9 +8,9 @@
 package app
 
 import (
-	"github.com/goki/mobile/event/lifecycle"
-	"github.com/goki/mobile/event/size"
-	_ "github.com/goki/mobile/internal/mobileinit"
+	"goki.dev/mobile/event/lifecycle"
+	"goki.dev/mobile/event/size"
+	_ "goki.dev/mobile/internal/mobileinit"
 )
 
 // Main is called by the main.main function to run the mobile application.

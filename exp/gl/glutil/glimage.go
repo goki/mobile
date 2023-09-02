@@ -13,10 +13,10 @@ import (
 	"runtime"
 	"sync"
 
-	"github.com/goki/mobile/event/size"
-	"github.com/goki/mobile/exp/f32"
-	"github.com/goki/mobile/geom"
-	"github.com/goki/mobile/gl"
+	"goki.dev/mobile/event/size"
+	"goki.dev/mobile/exp/f32"
+	"goki.dev/mobile/geom"
+	"goki.dev/mobile/gl"
 )
 
 // Images maintains the shared state used by a set of *Image objects.

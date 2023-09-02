@@ -190,7 +190,7 @@ import (
 	"log"
 	"unsafe"
 
-	"github.com/goki/mobile/internal/mobileinit"
+	"goki.dev/mobile/internal/mobileinit"
 )
 
 var (

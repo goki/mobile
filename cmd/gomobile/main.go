@@ -151,7 +151,7 @@ func helpDocumentation(path string) {
 		w.WriteString(cmd.Long)
 	}
 
-	w.WriteString("*/\npackage main // import \"github.com/goki/mobile/cmd/gomobile\"\n")
+	w.WriteString("*/\npackage main // import \"goki.dev/mobile/cmd/gomobile\"\n")
 
 	if err := ioutil.WriteFile(path, w.Bytes(), 0666); err != nil {
 		log.Fatal(err)

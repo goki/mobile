@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file.
 
 // Package clock provides a clock and time functions for a sprite engine.
-package clock // import "github.com/goki/mobile/exp/sprite/clock"
+package clock // import "goki.dev/mobile/exp/sprite/clock"
 
 // A Time represents an instant in sprite time.
 //

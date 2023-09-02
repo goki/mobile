@@ -15,9 +15,9 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/goki/mobile/event/size"
-	"github.com/goki/mobile/exp/f32"
-	"github.com/goki/mobile/geom"
+	"goki.dev/mobile/event/size"
+	"goki.dev/mobile/exp/f32"
+	"goki.dev/mobile/geom"
 )
 
 func TestAffine(t *testing.T) {

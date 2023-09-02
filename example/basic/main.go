@@ -33,15 +33,15 @@ import (
 	"encoding/binary"
 	"log"
 
-	"github.com/goki/mobile/app"
-	"github.com/goki/mobile/event/lifecycle"
-	"github.com/goki/mobile/event/paint"
-	"github.com/goki/mobile/event/size"
-	"github.com/goki/mobile/event/touch"
-	"github.com/goki/mobile/exp/app/debug"
-	"github.com/goki/mobile/exp/f32"
-	"github.com/goki/mobile/exp/gl/glutil"
-	"github.com/goki/mobile/gl"
+	"goki.dev/mobile/app"
+	"goki.dev/mobile/event/lifecycle"
+	"goki.dev/mobile/event/paint"
+	"goki.dev/mobile/event/size"
+	"goki.dev/mobile/event/touch"
+	"goki.dev/mobile/exp/app/debug"
+	"goki.dev/mobile/exp/f32"
+	"goki.dev/mobile/exp/gl/glutil"
+	"goki.dev/mobile/gl"
 )
 
 var (

@@ -57,10 +57,10 @@ func testMain(m *testing.M) int {
 		gocmd := filepath.Join(runtime.GOROOT(), "bin", "go")
 		gomobileBin = filepath.Join(binDir, "gomobile"+exe)
 		gobindBin := filepath.Join(binDir, "gobind"+exe)
-		if out, err := exec.Command(gocmd, "build", "-o", gomobileBin, "github.com/goki/mobile/cmd/gomobile").CombinedOutput(); err != nil {
+		if out, err := exec.Command(gocmd, "build", "-o", gomobileBin, "goki.dev/mobile/cmd/gomobile").CombinedOutput(); err != nil {
 			log.Fatalf("gomobile build failed: %v: %s", err, out)
 		}
-		if out, err := exec.Command(gocmd, "build", "-o", gobindBin, "github.com/goki/mobile/cmd/gobind").CombinedOutput(); err != nil {
+		if out, err := exec.Command(gocmd, "build", "-o", gobindBin, "goki.dev/mobile/cmd/gobind").CombinedOutput(); err != nil {
 			log.Fatalf("gobind build failed: %v: %s", err, out)
 		}
 		path := binDir
@@ -76,9 +76,9 @@ func testMain(m *testing.M) int {
 // TestObjcSeqTest runs ObjC test SeqTest.m.
 func TestObjcSeqTest(t *testing.T) {
 	runTest(t, []string{
-		"github.com/goki/mobile/bind/testdata/testpkg",
-		"github.com/goki/mobile/bind/testdata/testpkg/secondpkg",
-		"github.com/goki/mobile/bind/testdata/testpkg/simplepkg",
+		"goki.dev/mobile/bind/testdata/testpkg",
+		"goki.dev/mobile/bind/testdata/testpkg/secondpkg",
+		"goki.dev/mobile/bind/testdata/testpkg/simplepkg",
 	}, "", "SeqTest.m", "Testpkg.framework", false, false)
 }
 
@@ -87,17 +87,17 @@ func TestObjcSeqBench(t *testing.T) {
 	if testing.Short() {
 		t.Skip("skipping benchmark in short mode.")
 	}
-	runTest(t, []string{"github.com/goki/mobile/bind/testdata/benchmark"}, "", "SeqBench.m", "Benchmark.framework", true, true)
+	runTest(t, []string{"goki.dev/mobile/bind/testdata/benchmark"}, "", "SeqBench.m", "Benchmark.framework", true, true)
 }
 
 // TestObjcSeqWrappers runs ObjC test SeqWrappers.m.
 func TestObjcSeqWrappers(t *testing.T) {
-	runTest(t, []string{"github.com/goki/mobile/bind/testdata/testpkg/objcpkg"}, "", "SeqWrappers.m", "Objcpkg.framework", false, false)
+	runTest(t, []string{"goki.dev/mobile/bind/testdata/testpkg/objcpkg"}, "", "SeqWrappers.m", "Objcpkg.framework", false, false)
 }
 
 // TestObjcCustomPkg runs the ObjC test SeqCustom.m.
 func TestObjcCustomPkg(t *testing.T) {
-	runTest(t, []string{"github.com/goki/mobile/bind/testdata/testpkg"}, "Custom", "SeqCustom.m", "Testpkg.framework", false, false)
+	runTest(t, []string{"goki.dev/mobile/bind/testdata/testpkg"}, "Custom", "SeqCustom.m", "Testpkg.framework", false, false)
 }
 
 func runTest(t *testing.T, pkgNames []string, prefix, testfile, framework string, uitest, dumpOutput bool) {

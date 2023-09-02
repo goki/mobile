@@ -7,16 +7,16 @@
 // It is intended to serve as a reference implementation for testing
 // other sprite Engines written against OpenGL, or other more exotic
 // modern hardware interfaces.
-package portable // import "github.com/goki/mobile/exp/sprite/portable"
+package portable // import "goki.dev/mobile/exp/sprite/portable"
 
 import (
 	"image"
 	"image/draw"
 
-	"github.com/goki/mobile/event/size"
-	"github.com/goki/mobile/exp/f32"
-	"github.com/goki/mobile/exp/sprite"
-	"github.com/goki/mobile/exp/sprite/clock"
+	"goki.dev/mobile/event/size"
+	"goki.dev/mobile/exp/f32"
+	"goki.dev/mobile/exp/sprite"
+	"goki.dev/mobile/exp/sprite/clock"
 	xdraw "golang.org/x/image/draw"
 	"golang.org/x/image/math/f64"
 )

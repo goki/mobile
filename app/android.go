@@ -63,14 +63,14 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/goki/mobile/app/internal/callfn"
-	"github.com/goki/mobile/event/key"
-	"github.com/goki/mobile/event/lifecycle"
-	"github.com/goki/mobile/event/paint"
-	"github.com/goki/mobile/event/size"
-	"github.com/goki/mobile/event/touch"
-	"github.com/goki/mobile/geom"
-	"github.com/goki/mobile/internal/mobileinit"
+	"goki.dev/mobile/app/internal/callfn"
+	"goki.dev/mobile/event/key"
+	"goki.dev/mobile/event/lifecycle"
+	"goki.dev/mobile/event/paint"
+	"goki.dev/mobile/event/size"
+	"goki.dev/mobile/event/touch"
+	"goki.dev/mobile/geom"
+	"goki.dev/mobile/internal/mobileinit"
 )
 
 // mimeMap contains standard mime entries that are missing on Android

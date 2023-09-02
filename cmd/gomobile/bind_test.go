@@ -15,7 +15,7 @@ import (
 	"testing"
 	"text/template"
 
-	"github.com/goki/mobile/internal/sdkpath"
+	"goki.dev/mobile/internal/sdkpath"
 )
 
 func TestBindAndroid(t *testing.T) {
@@ -63,7 +63,7 @@ func TestBindAndroid(t *testing.T) {
 		if goos == "windows" {
 			os.Setenv("HOMEDRIVE", "C:")
 		}
-		cmdBind.flag.Parse([]string{"github.com/goki/mobile/asset"})
+		cmdBind.flag.Parse([]string{"goki.dev/mobile/asset"})
 		err := runBind(cmdBind)
 		if err != nil {
 			t.Log(buf.String())
@@ -145,7 +145,7 @@ func TestBindApple(t *testing.T) {
 		if goos == "windows" {
 			os.Setenv("HOMEDRIVE", "C:")
 		}
-		cmdBind.flag.Parse([]string{"github.com/goki/mobile/asset"})
+		cmdBind.flag.Parse([]string{"goki.dev/mobile/asset"})
 		if err := runBind(cmdBind); err != nil {
 			t.Log(buf.String())
 			t.Fatal(err)
@@ -244,7 +244,7 @@ func TestBindAppleAll(t *testing.T) {
 	if goos == "windows" {
 		os.Setenv("HOMEDRIVE", "C:")
 	}
-	cmdBind.flag.Parse([]string{"github.com/goki/mobile/asset"})
+	cmdBind.flag.Parse([]string{"goki.dev/mobile/asset"})
 	if err := runBind(cmdBind); err != nil {
 		t.Log(buf.String())
 		t.Fatal(err)
@@ -262,10 +262,10 @@ func TestBindWithGoModules(t *testing.T) {
 	}
 	defer os.RemoveAll(dir)
 
-	if out, err := exec.Command("go", "build", "-o="+dir, "github.com/goki/mobile/cmd/gobind").CombinedOutput(); err != nil {
+	if out, err := exec.Command("go", "build", "-o="+dir, "goki.dev/mobile/cmd/gobind").CombinedOutput(); err != nil {
 		t.Fatalf("%v: %s", err, string(out))
 	}
-	if out, err := exec.Command("go", "build", "-o="+dir, "github.com/goki/mobile/cmd/gomobile").CombinedOutput(); err != nil {
+	if out, err := exec.Command("go", "build", "-o="+dir, "goki.dev/mobile/cmd/gomobile").CombinedOutput(); err != nil {
 		t.Fatalf("%v: %s", err, string(out))
 	}
 	path := dir
@@ -301,7 +301,7 @@ func TestBindWithGoModules(t *testing.T) {
 			}{
 				{
 					Name: "Absolute Path",
-					Path: "github.com/goki/mobile/bind/testdata/cgopkg",
+					Path: "goki.dev/mobile/bind/testdata/cgopkg",
 				},
 				{
 					Name: "Relative Path",

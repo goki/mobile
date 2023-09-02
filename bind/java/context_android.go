@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package java // import "github.com/goki/mobile/bind/java"
+package java // import "goki.dev/mobile/bind/java"
 
 // #cgo LDFLAGS: -llog
 //
@@ -12,7 +12,7 @@ import "C"
 import (
 	"unsafe"
 
-	"github.com/goki/mobile/internal/mobileinit"
+	"goki.dev/mobile/internal/mobileinit"
 )
 
 //export setContext

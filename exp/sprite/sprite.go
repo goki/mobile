@@ -22,15 +22,15 @@
 //		modify the scene's nodes and animations (Arranger values)
 //		e.Render(scene, t, sz)
 //	}
-package sprite // import "github.com/goki/mobile/exp/sprite"
+package sprite // import "goki.dev/mobile/exp/sprite"
 
 import (
 	"image"
 	"image/draw"
 
-	"github.com/goki/mobile/event/size"
-	"github.com/goki/mobile/exp/f32"
-	"github.com/goki/mobile/exp/sprite/clock"
+	"goki.dev/mobile/event/size"
+	"goki.dev/mobile/exp/f32"
+	"goki.dev/mobile/exp/sprite/clock"
 )
 
 type Arranger interface {

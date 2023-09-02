@@ -47,9 +47,9 @@ goroutine as other code that calls OpenGL.
 	import (
 		"log"
 
-		"github.com/goki/mobile/app"
-		"github.com/goki/mobile/event/lifecycle"
-		"github.com/goki/mobile/event/paint"
+		"goki.dev/mobile/app"
+		"goki.dev/mobile/event/lifecycle"
+		"goki.dev/mobile/event/paint"
 	)
 
 	func main() {
@@ -85,4 +85,4 @@ response to lifecycle events. Such packages should call:
 
 in an init function inside that package.
 */
-package app // import "github.com/goki/mobile/app"
+package app // import "goki.dev/mobile/app"

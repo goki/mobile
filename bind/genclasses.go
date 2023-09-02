@@ -12,8 +12,8 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"github.com/goki/mobile/internal/importers"
-	"github.com/goki/mobile/internal/importers/java"
+	"goki.dev/mobile/internal/importers"
+	"goki.dev/mobile/internal/importers/java"
 )
 
 type (
@@ -941,7 +941,7 @@ import "C"
 
 import (
 	"Java"
-	_seq "github.com/goki/mobile/bind/seq"
+	_seq "goki.dev/mobile/bind/seq"
 )
 
 `

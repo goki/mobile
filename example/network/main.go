@@ -44,11 +44,11 @@ package main
 import (
 	"net/http"
 
-	"github.com/goki/mobile/app"
-	"github.com/goki/mobile/event/lifecycle"
-	"github.com/goki/mobile/event/paint"
-	"github.com/goki/mobile/event/size"
-	"github.com/goki/mobile/gl"
+	"goki.dev/mobile/app"
+	"goki.dev/mobile/event/lifecycle"
+	"goki.dev/mobile/event/paint"
+	"goki.dev/mobile/event/size"
+	"goki.dev/mobile/gl"
 )
 
 func main() {

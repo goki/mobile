@@ -21,7 +21,7 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"github.com/goki/mobile/internal/importers"
+	"goki.dev/mobile/internal/importers"
 )
 
 // Class is the bind representation of a Java class or

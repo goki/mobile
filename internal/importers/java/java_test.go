@@ -8,7 +8,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/goki/mobile/internal/importers"
+	"goki.dev/mobile/internal/importers"
 )
 
 func TestImport(t *testing.T) {

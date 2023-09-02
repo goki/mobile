@@ -9,18 +9,18 @@
 //
 // Each sprite.Texture is loaded as a GL texture object and drawn
 // to the screen via an affine transform done in a simple shader.
-package glsprite // import "github.com/goki/mobile/exp/sprite/glsprite"
+package glsprite // import "goki.dev/mobile/exp/sprite/glsprite"
 
 import (
 	"image"
 	"image/draw"
 
-	"github.com/goki/mobile/event/size"
-	"github.com/goki/mobile/exp/f32"
-	"github.com/goki/mobile/exp/gl/glutil"
-	"github.com/goki/mobile/exp/sprite"
-	"github.com/goki/mobile/exp/sprite/clock"
-	"github.com/goki/mobile/geom"
+	"goki.dev/mobile/event/size"
+	"goki.dev/mobile/exp/f32"
+	"goki.dev/mobile/exp/gl/glutil"
+	"goki.dev/mobile/exp/sprite"
+	"goki.dev/mobile/exp/sprite/clock"
+	"goki.dev/mobile/geom"
 )
 
 type node struct {

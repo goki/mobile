@@ -17,8 +17,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/goki/mobile/app/internal/apptest"
-	"github.com/goki/mobile/event/size"
+	"goki.dev/mobile/app/internal/apptest"
+	"goki.dev/mobile/event/size"
 )
 
 // TestAndroidApp tests the lifecycle, event, and window semantics of a
@@ -67,7 +67,7 @@ func TestAndroidApp(t *testing.T) {
 	}
 	defer os.Chdir(origWD)
 
-	run(t, "gomobile", "install", "github.com/goki/mobile/app/internal/testapp")
+	run(t, "gomobile", "install", "goki.dev/mobile/app/internal/testapp")
 
 	ln, err := net.Listen("tcp4", "localhost:0")
 	if err != nil {

@@ -38,7 +38,7 @@ import (
 	"sync"
 	"unsafe"
 
-	"github.com/goki/mobile/internal/mobileinit"
+	"goki.dev/mobile/internal/mobileinit"
 )
 
 var assetOnce sync.Once

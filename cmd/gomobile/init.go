@@ -17,7 +17,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/goki/mobile/internal/sdkpath"
+	"goki.dev/mobile/internal/sdkpath"
 )
 
 var (
@@ -80,7 +80,7 @@ func runInit(cmd *command) error {
 	}()
 
 	// Make sure gobind is up to date.
-	if err := goInstall([]string{"github.com/goki/mobile/cmd/gobind@latest"}, nil); err != nil {
+	if err := goInstall([]string{"goki.dev/mobile/cmd/gobind@latest"}, nil); err != nil {
 		return err
 	}
 

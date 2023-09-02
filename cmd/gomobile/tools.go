@@ -6,5 +6,5 @@
 package main
 
 import (
-	_ "github.com/goki/mobile/cmd/gobind"
+	_ "goki.dev/mobile/cmd/gobind"
 )
