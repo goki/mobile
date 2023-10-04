@@ -27,10 +27,6 @@ UIEdgeInsets getDevicePadding();
 bool isDark();
 void showKeyboard(int keyboardType);
 void hideKeyboard();
-
-void showFileOpenPicker(char* mimes, char *exts);
-void showFileSavePicker(char* mimes, char *exts);
-void closeFileResource(void* urlPtr);
 */
 import "C"
 import (
@@ -234,38 +230,4 @@ func driverShowVirtualKeyboard(keyboard KeyboardType) {
 // driverHideVirtualKeyboard requests the driver to hide any visible virtual keyboard
 func driverHideVirtualKeyboard() {
 	C.hideKeyboard()
-}
-
-var fileCallback func(string, func())
-
-//export filePickerReturned
-func filePickerReturned(str *C.char, urlPtr unsafe.Pointer) {
-	if fileCallback == nil {
-		return
-	}
-
-	fileCallback(C.GoString(str), func() {
-		C.closeFileResource(urlPtr)
-	})
-	fileCallback = nil
-}
-
-func driverShowFileOpenPicker(callback func(string, func()), filter *FileFilter) {
-	fileCallback = callback
-
-	mimeStr, extStr := cStringsForFilter(filter)
-	defer C.free(unsafe.Pointer(mimeStr))
-	defer C.free(unsafe.Pointer(extStr))
-
-	C.showFileOpenPicker(mimeStr, extStr)
-}
-
-func driverShowFileSavePicker(callback func(string, func()), filter *FileFilter, filename string) {
-	fileCallback = callback
-
-	mimeStr, extStr := cStringsForFilter(filter)
-	defer C.free(unsafe.Pointer(mimeStr))
-	defer C.free(unsafe.Pointer(extStr))
-
-	C.showFileSavePicker(mimeStr, extStr)
 }

@@ -164,10 +164,8 @@ func (a *app) HideVirtualKeyboard() {
 }
 
 func (a *app) ShowFileOpenPicker(callback func(string, func()), filter *FileFilter) {
-	driverShowFileOpenPicker(callback, filter)
 }
 func (a *app) ShowFileSavePicker(callback func(string, func()), filter *FileFilter, filename string) {
-	driverShowFileSavePicker(callback, filter, filename)
 }
 
 type stopPumping struct{}
