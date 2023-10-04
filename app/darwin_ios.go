@@ -9,7 +9,7 @@ package app
 
 /*
 #cgo CFLAGS: -x objective-c -DGL_SILENCE_DEPRECATION
-#cgo LDFLAGS: -framework Foundation -framework UIKit -framework MobileCoreServices -framework GLKit -framework OpenGLES -framework QuartzCore -framework UserNotifications
+#cgo LDFLAGS: -framework Foundation -framework UIKit -framework MobileCoreServices -framework QuartzCore -framework UserNotifications
 #include <sys/utsname.h>
 #include <stdint.h>
 #include <stdbool.h>
@@ -17,13 +17,10 @@ package app
 #import <UIKit/UIKit.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 #include <UIKit/UIDevice.h>
-#import <GLKit/GLKit.h>
 
 extern struct utsname sysInfo;
 
 void runApp(void);
-void makeCurrentContext(GLintptr ctx);
-void swapBuffers(GLintptr ctx);
 uint64_t threadID();
 
 UIEdgeInsets getDevicePadding();

@@ -12,12 +12,11 @@
 
 #import <UIKit/UIKit.h>
 #import <MobileCoreServices/MobileCoreServices.h>
-// #import <GLKit/GLKit.h>
 #import <UserNotifications/UserNotifications.h>
 
 struct utsname sysInfo;
 
-@interface GoAppAppController : GLKViewController<UIContentContainer, GLKViewDelegate>
+@interface GoAppAppController : UIViewController<UIContentContainer>
 @end
 
 @interface GoAppView : UIView
