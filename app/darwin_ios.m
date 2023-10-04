@@ -128,9 +128,9 @@ struct utsname sysInfo;
 	self.view.multipleTouchEnabled = true;
 	self.view.userInteractionEnabled = YES;
 	
-	self.paused = YES;
-	self.resumeOnDidBecomeActive = NO;
-	self.preferredFramesPerSecond = 0;
+	// self.paused = YES;
+	// self.resumeOnDidBecomeActive = NO;
+	// self.preferredFramesPerSecond = 0;
 
 	int scale = 1;
 	if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)]) {
