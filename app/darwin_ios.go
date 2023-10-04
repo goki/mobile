@@ -234,8 +234,8 @@ func drawloop() {
 }
 
 //export startloop
-func startloop(ctx C.GLintptr) {
-	go theApp.loop(ctx)
+func startloop() {
+	go theApp.loop()
 }
 
 // loop is the primary drawing loop.
@@ -243,7 +243,7 @@ func startloop(ctx C.GLintptr) {
 // After UIKit has captured the initial OS thread for processing UIKit
 // events in runApp, it starts loop on another goroutine. It is locked
 // to an OS thread for its OpenGL context.
-func (a *app) loop(ctx C.GLintptr) {
+func (a *app) loop() {
 	runtime.LockOSThread()
 	// C.makeCurrentContext(ctx)
 
