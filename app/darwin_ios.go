@@ -37,7 +37,6 @@ import (
 	"log"
 	"runtime"
 	"strings"
-	"time"
 	"unsafe"
 
 	"goki.dev/mobile/event/lifecycle"
@@ -213,61 +212,6 @@ func lifecycleVisible() { theApp.sendLifecycle(lifecycle.StageVisible) }
 
 //export lifecycleFocused
 func lifecycleFocused() { theApp.sendLifecycle(lifecycle.StageFocused) }
-
-//export drawloop
-func drawloop() {
-	runtime.LockOSThread()
-	defer runtime.UnlockOSThread()
-
-	// for workAvailable := theApp.worker.WorkAvailable(); ; {
-	for {
-		select {
-		// case <-workAvailable:
-		// theApp.worker.DoWork()
-		case <-theApp.publish:
-			theApp.publishResult <- PublishResult{}
-			return
-		case <-time.After(100 * time.Millisecond): // incase the method blocked!!
-			return
-		}
-	}
-}
-
-//export startloop
-func startloop() {
-	go theApp.loop()
-}
-
-// loop is the primary drawing loop.
-//
-// After UIKit has captured the initial OS thread for processing UIKit
-// events in runApp, it starts loop on another goroutine. It is locked
-// to an OS thread for its OpenGL context.
-func (a *app) loop() {
-	runtime.LockOSThread()
-	// C.makeCurrentContext(ctx)
-
-	// workAvailable := a.worker.WorkAvailable()
-
-	for {
-		select {
-		// case <-workAvailable:
-		// 	a.worker.DoWork()
-		case <-theApp.publish:
-			// loop1:
-			// for {
-			// 	select {
-			// 	case <-workAvailable:
-			// 		a.worker.DoWork()
-			// 	default:
-			// 		break loop1
-			// 	}
-			// }
-			// C.swapBuffers(ctx)
-			theApp.publishResult <- PublishResult{}
-		}
-	}
-}
 
 func cStringsForFilter(filter *FileFilter) (*C.char, *C.char) {
 	mimes := strings.Join(filter.MimeTypes, "|")
